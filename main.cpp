@@ -11,9 +11,9 @@ double Funk(double x)
 void rec(TList<double> kor, TList<double> fun,double max,double r,double E, int &Rpos)
 { 
 	double curr, R;
-	kor.Reset();
-	fun.Reset();
-	for (int i = 0; i < kor.GetSize(); i++)
+	kor.SetPos(1);
+	fun.SetPos(1);
+	for (int i = 1; i < kor.GetSize(); i++)
 	{
 		curr = fabs((fun.GetCurr() - fun.GetPrev()) / (kor.GetCurr() - kor.GetPrev()));
 		fun.GoNext();
@@ -23,21 +23,26 @@ void rec(TList<double> kor, TList<double> fun,double max,double r,double E, int 
 		
 	}
 
-	if (max == 0) max = 1;
-	if (max > 0) max = r * max;
+	if (max == 0)
+		max = 1;
+	else 
+		max = r * max;
 
-	kor.Reset();
-	fun.Reset();
-	double Rmax;
-	Rmax = max * (kor.GetCurr() - kor.GetPrev()) + (pow((fun.GetCurr() - fun.GetPrev()), 2) / (max*(kor.GetCurr() - kor.GetPrev()))) - 2 * (fun.GetCurr() + fun.GetPrev());
-	for (int i = 0; i < kor.GetSize(); i++)
+	kor.SetPos(1);
+	fun.SetPos(1);
+	double Rmax,k1,k2,k3;
+	k1 = max * (kor.GetCurr() - kor.GetPrev());
+	k2 = pow((fun.GetCurr() - fun.GetPrev()),2) / (max*(kor.GetCurr() - kor.GetPrev()));
+	k3 = -2 * (fun.GetCurr() + fun.GetPrev());
+	Rmax = max * (kor.GetCurr() - kor.GetPrev()) + (pow((fun.GetCurr() - fun.GetPrev()),2)/( max*(kor.GetCurr() - kor.GetPrev()))) - 2 * (fun.GetCurr() + fun.GetPrev());
+	for (int i = 1; i < kor.GetSize(); i++)
 	{
 		double k = max * (kor.GetCurr() - kor.GetPrev());
 		R = k + (pow((fun.GetCurr() - fun.GetPrev()), 2) / k) - 2 * (fun.GetCurr() + fun.GetPrev());
 		if (R > Rmax)
 		{
 			Rmax = R;
-			Rpos =i;
+			Rpos = i;
 		}
 	}
 
@@ -58,8 +63,7 @@ int main()
 {
 	TList<double> kor, fun;
 	double x_0, x_k, max, E, r;
-	int *pos;
-	pos = 0;
+	int pos=1;
 
 	std::cout << "enter interval X" << std::endl;
 	std::cin >> x_0 >> x_k;
@@ -76,9 +80,9 @@ int main()
 	fun.InsLast(Funk(x_k));
 
 	max = fabs((Funk(x_k) - Funk(x_0)) / (x_k - x_0)); //для самого начала
-	rec(kor, fun, max, r, E, *pos);
-	kor.SetPos(*pos);
-	fun.SetPos(*pos);
+	rec(kor, fun, max, r, E, pos);
+	kor.SetPos(pos);
+	fun.SetPos(pos);
 	double x_min = kor.GetCurr(), f_min=fun.GetCurr();
 	std::cout << "pos =" << pos << "  " << "x*=" << x_min << "  " << "F(x*)=" << f_min << std::endl;
 }
