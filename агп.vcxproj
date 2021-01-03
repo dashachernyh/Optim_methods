@@ -115,10 +115,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="List.h" />
+    <ClInclude Include="HansenProblem.hpp" />
+    <ClInclude Include="HillProblem.hpp" />
+    <ClInclude Include="HillProblemFamily.hpp" />
+    <ClInclude Include="IGeneralOptProblemFamily.hpp" />
+    <ClInclude Include="IOptProblemFamily.hpp" />
+    <ClInclude Include="HansenProblemFamily.hpp" />
+    <ClInclude Include="IOptProblem.hpp" />
+    <ClInclude Include="IGeneralOptProblem.hpp" />
+    <ClInclude Include="method.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="HillProblem.cpp" />
+    <ClCompile Include="main1.cpp" />
+    <ClCompile Include="IOptProblemFamily.cpp" />
+    <ClCompile Include="IOptProblem.cpp" />
+    <ClCompile Include="IGeneralOptProblem.cpp" />
+    <ClCompile Include="IGeneralOptProblemFamily.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
