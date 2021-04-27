@@ -1,4 +1,5 @@
 #pragma once
+
 #include "IGeneralOptProblem.hpp"
 
 class IOptProblem : public IGeneralOptProblem
@@ -9,23 +10,23 @@ protected:
 	/// Set the value of Lipschitz constant
 	void SetLipschitzConstant(double lipConst);
 	/// Set global maximizer and global maximum value
-	void SetFunctionMax(double maxPoint, double maxValue);
+	void SetFunctionMax(vector<double> maxPoint, double maxValue);
 	IOptProblem();
 public:
-	IOptProblem(int dim, double loBound, double upBound,
-		double optPoint, double optVal, int probIndex = -1);
+	IOptProblem(int dim, vector<double> loBound, vector<double> upBound,
+		vector<double> optPoint, double optVal, int probIndex = -1);
 
 	/// Get global minimizer
-	double GetOptimumPoint() const;
+	vector<double> GetOptimumPoint() const;
 	/// Get global minimum value
 	double GetOptimumValue() const;
 
 	/// What is specified for the objective function
 	bool GetStatus(enum EOptFunctionParameter param) const;
 	/// Get global maximizer
-	double GetMaxPoint() const;
+	vector<double> GetMaxPoint() const;
 	/// Get global maximum value
-	double GetMaxValue(int index) const;
+	double GetMaxValue() const;
 	/// Get the value of Lipschitz constant
 	double GetLipschitzConstant() const;
 

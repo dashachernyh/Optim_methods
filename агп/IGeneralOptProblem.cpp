@@ -50,7 +50,7 @@ double IGeneralOptProblem::GetLipschitzConstant(uint index) const
 }
 
 // ------------------------------------------------------------------------------------------------
-void IGeneralOptProblem::SetFunctionMin(uint index, double minPoint, double minValue)
+void IGeneralOptProblem::SetFunctionMin(uint index, vector<double> minPoint, double minValue)
 {
 	if (index >= mFunctions.size())
 		throw string("function index is out of range");
@@ -60,7 +60,7 @@ void IGeneralOptProblem::SetFunctionMin(uint index, double minPoint, double minV
 }
 
 // ------------------------------------------------------------------------------------------------
-double IGeneralOptProblem::GetMinPoint(uint index) const
+vector<double> IGeneralOptProblem::GetMinPoint(uint index) const
 {
 	if (index >= mFunctions.size())
 		throw string("function index is out of range");
@@ -80,7 +80,7 @@ double IGeneralOptProblem::GetMinValue(uint index) const
 }
 
 // ------------------------------------------------------------------------------------------------
-void IGeneralOptProblem::SetFunctionMax(uint index, double maxPoint, double maxValue)
+void IGeneralOptProblem::SetFunctionMax(uint index, vector<double> maxPoint, double maxValue)
 {
 	if (index >= mFunctions.size())
 		throw string("function index is out of range");
@@ -90,7 +90,7 @@ void IGeneralOptProblem::SetFunctionMax(uint index, double maxPoint, double maxV
 }
 
 // ------------------------------------------------------------------------------------------------
-double IGeneralOptProblem::GetMaxPoint(uint index) const
+vector<double> IGeneralOptProblem::GetMaxPoint(uint index) const
 {
 	if (index >= mFunctions.size())
 		throw string("function index is out of range");
@@ -110,7 +110,7 @@ double IGeneralOptProblem::GetMaxValue(uint index) const
 }
 
 // ------------------------------------------------------------------------------------------------
-double IGeneralOptProblem::GetOptimumPoint() const
+vector<double> IGeneralOptProblem::GetOptimumPoint() const
 {
 	return mOptimumPoint;
 }
@@ -136,7 +136,7 @@ IGeneralOptProblem::IGeneralOptProblem()
 }
 
 // ------------------------------------------------------------------------------------------------
-IGeneralOptProblem::IGeneralOptProblem(int dim, double loBound, double upBound,
+IGeneralOptProblem::IGeneralOptProblem(int dim, vector<double> loBound, vector<double> upBound,
 	int probIndex) :
 	mDimension(dim), mLoBound(loBound), mUpBound(upBound), mProblemIndex(probIndex),
 	mFunctionNumber(0)
@@ -149,7 +149,7 @@ int IGeneralOptProblem::GetDimension() const
 }
 
 // ------------------------------------------------------------------------------------------------
-void IGeneralOptProblem::GetBounds(double& lb, double& ub) const
+void IGeneralOptProblem::GetBounds(vector<double>& lb, vector<double>& ub) const
 {
 	lb = mLoBound;
 	ub = mUpBound;
