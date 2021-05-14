@@ -1,18 +1,13 @@
 #pragma once
+#include <algorithm>
+#include<vector>
+#include <math.h>
 
-class MethodDual
+#include "Method_Strongina.h"
+
+class MethodDual:public Method
 {
-	std::vector<Trial> trials;
-	Trial optimum;
-	Trial first;
-	Trial second;
-	int index_problem;
-	int best_i;
-	double eps, r;
 public:
-	int key;
-	Trial GetOpt() { return optimum; }
-	int GetBestIndex() { return best_i; }
 	MethodDual(int _key, int index_problem, double x_0, double x_n, double _e, double _r);
 	void solve_dual();
 };
@@ -32,6 +27,7 @@ MethodDual::MethodDual(int _key, int _index_problem, double x_0, double x_n, dou
 	r = _r;
 
 }
+
 void MethodDual::solve_dual()
 {
 	Trial current;

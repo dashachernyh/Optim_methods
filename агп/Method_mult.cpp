@@ -6,21 +6,18 @@
 #include"Trial.h"
 #include "Method_mult.h"
 #include "Map.h"
-#include "GrishaginOption.hpp"
-#include "GrishaginProblemFamily.hpp"
+
 
 void MethodMult:: PrintTrueValueGrishagin(int index_problem)
 {
-	TGrishaginProblemFamily grishFam;
 	vector<double> optimumPoint;
 	optimumPoint = grishFam[index_problem]->GetOptimumPoint();
 	std::cout << "x1_min= " << optimumPoint[0] << " x2_min= " << optimumPoint[1] << "  F_min= " << grishFam[index_problem]->GetOptimumValue() << std::endl;
 }
 
 // вычисляет значение задачи Гришагина 
-double Funk_mult(int index_problem, double* y)
+double MethodMult::Funk_mult(int index_problem, double* y)
 {
-	TGrishaginProblemFamily grishFam;
 	vector<double> val;
 	val.push_back(y[0]);
 	val.push_back(y[1]);
@@ -103,9 +100,6 @@ void MethodMult::solve_mult(double* y)
 	double power = 1 / n;  
 	double curr_eps = pow(trials[1].x - trials[0].x, power);
 	out_optimal[2] = first.z;
-
-	// отображение начальных условий поиска 
-	std::cout << "x_" << 1 << " " << trials[1].x << " y_" << 1 << " " << trials[1].z << std::endl;
 
 	//std::ofstream out1;
 	while (curr_eps > eps)

@@ -131,7 +131,7 @@
     <ClInclude Include="IOptProblem.hpp" />
     <ClInclude Include="IGeneralOptProblem.hpp" />
     <ClInclude Include="Map.h" />
-    <ClInclude Include="method.h" />
+    <ClInclude Include="Method_Strongina.h" />
     <ClInclude Include="method_dual.h" />
     <ClInclude Include="Method_mult.h" />
     <ClInclude Include="Trial.h" />
@@ -149,6 +149,7 @@
     <ClCompile Include="GrishaginOption.cpp" />
     <ClCompile Include="grishagin_function.cpp" />
     <ClCompile Include="IConstrainedOptProblemFamily.cpp" />
+    <ClCompile Include="Method_Strongina.cpp" />
     <ClCompile Include="X_to_y.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

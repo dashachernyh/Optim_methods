@@ -1,4 +1,6 @@
 #pragma once
+#include "GrishaginOption.hpp"
+#include "GrishaginProblemFamily.hpp"
 #include <vector>
 
 class MethodMult
@@ -13,6 +15,7 @@ class MethodMult
 	double eps, r;
 	double a, b;                       //интервал куба
 	double koef[2];                    // коэффициенты масштабирования koef[0] для сдвига, koef[1] для увеличения масштаба
+	TGrishaginProblemFamily grishFam;  //Семейство задач
 public:
 	int key;                           
 	std::vector<double> GetOpt() { return out_optimal; }  // возвращает оптимальное значение
@@ -21,5 +24,6 @@ public:
 	void solve_mult(double * y);
 	void ScaleFunc(double y);                             // масштабирует область поиска (куб)
 	void InsertScale(double* y);                          // применение масштабирование к y
-	void PrintTrueValueGrishagin(int index_problem);        
+	void PrintTrueValueGrishagin(int index_problem); 
+	double Funk_mult(int index_problem, double* y);
 };
