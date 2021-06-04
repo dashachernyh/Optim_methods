@@ -16,8 +16,7 @@ class MethodMult
 	double a, b;                       //интервал куба
 	double koef[2];                    // коэффициенты масштабирования koef[0] для сдвига, koef[1] для увеличения масштаба
 	TGrishaginProblemFamily grishFam;  //Семейство задач
-public:
-	int key;                           
+public:                         
 	std::vector<double> GetOpt() { return out_optimal; }  // возвращает оптимальное значение
 	int GetBestIndex() { return best_i; }                 
 	MethodMult(int _index_problem, double* y, double _a,  double _b, double _e, double _r, double _n, double _m);
@@ -26,4 +25,5 @@ public:
 	void InsertScale(double* y);                          // применение масштабирование к y
 	void PrintTrueValueGrishagin(int index_problem); 
 	double Funk_mult(int index_problem, double* y);
+	std::vector<double> GetTrueOpt_grish(int index_problem);
 };

@@ -7,6 +7,13 @@
 #include "Method_mult.h"
 #include "Map.h"
 
+std::vector<double> MethodMult::GetTrueOpt_grish(int index_problem)
+{	
+	std::vector<double> optimumPoint;
+	optimumPoint = grishFam[index_problem]->GetOptimumPoint();
+	std::vector<double> point{ optimumPoint[0], optimumPoint[1] };
+	return point;
+}
 
 void MethodMult:: PrintTrueValueGrishagin(int index_problem)
 {
@@ -175,4 +182,5 @@ void MethodMult::solve_mult(double* y)
 		itr++;
 		//out1.close();
 	}
+	std::cout << "itr = " << itr << std::endl;
 }

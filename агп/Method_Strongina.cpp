@@ -8,6 +8,19 @@ void Method::InitIntervalHans(int index, vector<double> &begin, vector<double> &
 	hansFam[index]->GetBounds(begin, end);
 }
 
+double Method::GetTrueOpt_hans(int index_problem)
+{
+	vector<double> optimumPoint;
+	optimumPoint = hansFam[index_problem]->GetOptimumPoint();
+	return optimumPoint[0];
+}
+
+double Method::GetTrueOpt_hill(int index_problem)
+{
+
+	return minHill[index_problem][1];
+}
+
 //вывод истинных значений для задачи Hans
 void  Method::PrintTrueValueHans(int index_problem)
 {
@@ -43,14 +56,16 @@ double Method::Funk(int key, int index_problem, double x)
 	}
 }
 
-Method::Method(int _key, int _index_problem, double x_0, double x_n, double _e, double _r)
+Method::Method(int _key, int _index_problem, std::vector<double> x_0, std::vector<double> x_n, double _e, double _r)
 {
 	index_problem = _index_problem;
 	key = _key;
-	first.x = x_0;
-	first.z = Funk(key, index_problem, x_0);
-	second.x = x_n;
-	second.z = Funk(key, index_problem, x_n);
+	if (key == 1)
+		InitIntervalHans(index_problem, x_0, x_n);
+	first.x = x_0[0];
+	first.z = Funk(key, index_problem, first.x);
+	second.x = x_n[0];
+	second.z = Funk(key, index_problem, second.x);
 	trials.push_back(first);
 	trials.push_back(second);
 	best_i = 0;
@@ -92,7 +107,7 @@ void Method::solve()
 				Rpos = i;
 			}
 		}
-		curr_eps = trials.at(Rpos).x - trials.at(Rpos - 1).x;
+		curr_eps = trials[Rpos].x - trials[Rpos - 1].x;
 
 		std::vector<Trial>::iterator it2 = trials.begin();
 		for (it = trials.begin(); it - trials.begin() <= Rpos; it++) it2 = it;

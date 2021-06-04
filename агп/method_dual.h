@@ -8,19 +8,21 @@
 class MethodDual:public Method
 {
 public:
-	MethodDual(int _key, int index_problem, double x_0, double x_n, double _e, double _r);
+	MethodDual(int _key, int index_problem, std::vector<double> x_0, std::vector<double> x_n, double _e, double _r);
 	void solve_dual();
 };
 
-MethodDual::MethodDual(int _key, int _index_problem, double x_0, double x_n, double _e, double _r)
+MethodDual::MethodDual(int _key, int _index_problem, std::vector<double> x_0, std::vector<double> x_n, double _e, double _r)
 {
 	index_problem = _index_problem;
 	key = _key;
-	first.x = x_0;
-	first.z = Funk(key, index_problem, x_0);
-	second.x = x_n;
-	second.z = Funk(key, index_problem, x_n);
-	trials.push_back(first);
+	if (key == 3)
+		InitIntervalHans(index_problem, x_0, x_n);
+	first.x = x_0[0];
+	first.z = Funk(key, index_problem, first.x);
+	second.x = x_n[0];
+	second.z = Funk(key, index_problem, second.x);
+	trials[0] = first;
 	trials.push_back(second);
 	best_i = 0;
 	eps = _e;
@@ -47,7 +49,7 @@ void MethodDual::solve_dual()
 		for (int i = 2; i < trials.size(); i++)
 		{
 			double max;
-			max = fabs((trials.at(i).z - trials.at(i - 1).z) / (trials.at(i).x - trials.at(i - 1).x));
+			max = fabs((trials[i].z - trials[i - 1].z) / (trials[i].x - trials[i - 1].x));
 			if (max > M)
 				M = max;
 			if (z_min > trials[i].z)
@@ -72,7 +74,7 @@ void MethodDual::solve_dual()
 				Rpos = i;
 			}
 		}
-		curr_eps = trials.at(Rpos).x - trials.at(Rpos - 1).x;
+		curr_eps = trials[Rpos].x - trials[Rpos - 1].x;
 
 		std::vector<Trial>::iterator it2 = trials.begin();
 		for (it = trials.begin(); it - trials.begin() <= Rpos; it++) it2 = it;
@@ -87,7 +89,6 @@ void MethodDual::solve_dual()
 		current.z = Funk(key, index_problem, current.x);
 		trials.insert(it2, current);
 
-		int pos = find(trials.begin(), trials.end(), current) - trials.begin();
 		if (optimum.z > current.z)
 		{
 			best_i = itr;
