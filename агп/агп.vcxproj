@@ -84,6 +84,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -131,9 +132,12 @@
     <ClInclude Include="IOptProblem.hpp" />
     <ClInclude Include="IGeneralOptProblem.hpp" />
     <ClInclude Include="Map.h" />
-    <ClInclude Include="Method_Strongina.h" />
-    <ClInclude Include="method_dual.h" />
-    <ClInclude Include="Method_mult.h" />
+    <ClInclude Include="MethodMult_mixed_p.h" />
+    <ClInclude Include="MethodMult_p.h" />
+    <ClInclude Include="MethodStrongina.h" />
+    <ClInclude Include="Method_dual.h" />
+    <ClInclude Include="MethodMult.h" />
+    <ClInclude Include="Mixture.h" />
     <ClInclude Include="Trial.h" />
   </ItemGroup>
   <ItemGroup>
@@ -144,12 +148,17 @@
     <ClCompile Include="IGeneralOptProblem.cpp" />
     <ClCompile Include="IGeneralOptProblemFamily.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Method_mult.cpp" />
+    <ClCompile Include="MethodMult_mixed_p.cpp" />
+    <ClCompile Include="MethodMult_p.cpp" />
+    <ClCompile Include="MethodMult_mixed.cpp" />
+    <ClCompile Include="MethodMult.cpp" />
     <ClCompile Include="GrishaginConstrainedProblem.cpp" />
     <ClCompile Include="GrishaginOption.cpp" />
     <ClCompile Include="grishagin_function.cpp" />
     <ClCompile Include="IConstrainedOptProblemFamily.cpp" />
-    <ClCompile Include="Method_Strongina.cpp" />
+    <ClCompile Include="MethodStrongina.cpp" />
+    <ClCompile Include="MethodMult_mixed.h" />
+    <ClCompile Include="Method_dual.cpp" />
     <ClCompile Include="X_to_y.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

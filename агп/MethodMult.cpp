@@ -2,10 +2,15 @@
 #include<fstream>
 #include <random>
 #include <ctime>
+#include <algorithm>
 
-#include"Trial.h"
-#include "Method_mult.h"
-#include "Map.h"
+#include "MethodMult.h"
+
+
+double MethodMult::Funk_test(int index_problem, double* y)
+{
+	return y[0]*y[0]+y[1]*y[1] - 2;  // гиперболойд элиптический мин в т (0, 0, -2)
+}
 
 std::vector<double> MethodMult::GetTrueOpt_grish(int index_problem)
 {	
@@ -59,23 +64,56 @@ void MethodMult::InsertScale(double* y)
 }
 
 MethodMult::MethodMult(int _index_problem, double *y, double _a, double _b, double _e, double _r,
-	double _n, double _m) :a(_a), b(_b), eps(_e), r(_r), n(_n), m(_m)
+	int _n, int _m) :a(_a), b(_b), eps(_e), r(_r), n(_n), m(_m)
 {
-	Trial current;
+	Trial current, first, second;
 	index_problem = _index_problem;
 	best_i = 0;
 	out_optimal = { 0, 0, 0 };                  // оптимальное решение нулевое
 	std::mt19937 gen;
 	gen.seed(static_cast<unsigned int>(time(0)));
-	double x_1;
-	x_1 = gen() % 100 / (100 * 1.0);         // выбираем произвольную точку поиска на интервале [0, 1]
+	double x_next;
+
 	first.x = 0;                                                    
-	mapd(0, m, y, n, 1);                        
-	ScaleFunc(y[0]);
+	mapd(0, m, y, n, 1); 
+	ScaleFunc(y[0]);  // для всех точек один раз считаем
 	InsertScale(y);
 	first.z = Funk_mult(index_problem, y);  // вычисляем значение в этой точке 
 	trials.push_back(first);
+	
+	current.x = 0.04;
+	mapd(current.x, m, y, n, 1);
+	InsertScale(y);
+	current.z = Funk_mult(index_problem, y); 
+	trials.push_back(current);
+	/*
+	current.x = 0.38;
+	mapd(current.x, m, y, n, 1);
+	InsertScale(y);
+	current.z = Funk_mult(index_problem, y);
+	trials.push_back(current);
+	
+	current.x = 0.5;
+	mapd(current.x, m, y, n, 1);
+	InsertScale(y);
+	current.z = Funk_mult(index_problem, y);
+	trials.push_back(current);
+	
+	current.x = 0.63;
+	mapd(current.x, m, y, n, 1);
+	InsertScale(y);
+	current.z = Funk_mult(index_problem, y);
+	trials.push_back(current);
 
+	current.x = 0.91;
+	mapd(current.x, m, y, n, 1);
+	InsertScale(y);
+	current.z = Funk_mult(index_problem, y);
+	trials.push_back(current);*/
+
+	
+	/*double x_1;
+	x_1 = gen() % 100 / (100 * 1.0);         // выбираем произвольную точку поиска на интервале [0, 1]
 	if (x_1 != 1 && x_1 != 0)              // если выбранная точка x1 лежит внутри интервала [0, 1]
 	{
 		current.x = x_1;
@@ -83,63 +121,74 @@ MethodMult::MethodMult(int _index_problem, double *y, double _a, double _b, doub
 		InsertScale(y);
 		current.z = Funk_mult(index_problem, y);
 		trials.push_back(current);
-	}
+	}*/
+	
 	second.x = 1;
 	mapd(1, m, y, n, 1);
 	InsertScale(y);
-	second.z = Funk_mult (index_problem, y);
+	second.z = Funk_mult(index_problem, y);
 	trials.push_back(second);
+
+	for (int i = 0; i < trials.size(); i++)
+		std::cout << trials[i].x << " " << trials[i].z << std::endl;
 }
 
 //алгоритм для многомерного случая, принимает массив y (координаты), размерности n, значения на [0, 1]
-void MethodMult::solve_mult(double* y)
+void MethodMult::SolveMult(double* y)
 {
 	Trial current;        // для подсчета нового испытания
 	double M, Rmax;
 	int Rpos;
 	std::vector<Trial>::iterator it = trials.begin();  // для поиска позиции добавления нового испытания в векторе trials
-	double z_min = trials[0].z;                        // минимальное значение функции
-	for (int i = 1; i < trials.size(); i++) {
+	double z_min = trials[0].z;       // минимальное значение функции
+	for (size_t i = 1; i < trials.size(); i++) {
 		if (z_min > trials[i].z)
 			z_min = trials[i].z;
 	}
 	int itr = 0;           // счетчик итераций
-	double power = 1 / n;  
+	double power = 1 / double(n);  
 	double curr_eps = pow(trials[1].x - trials[0].x, power);
-	out_optimal[2] = first.z;
+	out_optimal[2] = trials[0].z;
 
-	//std::ofstream out1;
-	while (curr_eps > eps)
+	std::vector<double> true_opt = GetTrueOpt_grish(index_problem);
+
+	std::ofstream out1;
+	out1.open("Grishagin.txt", std::ofstream::ios_base::app);  // печать в файл
+
+	while(fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1])>eps)
+	//while (curr_eps > eps)
 	{
 		Rpos = 1;
+		
 		// начальные значение для вычисления M на интервале 1
 		double d_z = fabs(trials[1].z - trials[0].z);   
 		double d_x = fabs(trials[1].x - trials[0].x);
 		d_x = pow(d_x, power);
-		M = d_z / d_x;
+		M = 230;
+		/*M = d_z / d_x;
 
-		for (int i = 2; i < trials.size(); i++)      // поиск со 2 интервала
+		for (size_t i = 2; i < trials.size(); i++)      // поиск со 2 интервала
 		{
 			double max;
-			max = fabs((trials[i].z - trials[i - 1].z)) / pow(trials[i].x - trials[i - 1].x, power);
+			max = fabs((trials[i].z - trials[i - size_t(1)].z)) / pow(trials[i].x - trials[i - size_t(1)].x, power);
 			if (max > M)
 				M = max;
 			if (z_min > trials[i].z)
 				z_min = trials[i].z;
 		}
 		if (M == 0)
-			M = 1;
+			M = 1;*/
 
 		// значение на интервале 1
 		Rmax = d_x + (pow(d_z / (r * M), 2) / d_x)
 			- 2* (trials[1].z + trials[0].z - 2 * z_min) / (r * M);
-
-		for (int i = 2; i < trials.size(); i++)       // поиск со 2 интервала
+	
+		for (size_t i = 2; i < trials.size(); i++)       // поиск со 2 интервала
 		{
-			double k = pow(trials[i].x - trials[i - 1].x, power);   // для оптимизации вычисления
+			double k = pow(trials[i].x - trials[i - size_t(1)].x, power);   // для оптимизации вычисления
 
-			double R = k + (pow((trials[i].z - trials[i - 1].z) / (M * r), 2) / k) -
-				2 * (trials[i].z + trials[i - 1].z - 2 * z_min) / (r * M);
+			double R = k + (pow((trials[i].z - trials[i - size_t(1)].z) / (M * r), 2) / k) -
+				2 * (trials[i].z + trials[i - size_t(1)].z - 2 * z_min) / (r * M);
 
 			if (R > Rmax)
 			{
@@ -147,13 +196,13 @@ void MethodMult::solve_mult(double* y)
 				Rpos = i;
 			}
 		}
-		curr_eps = pow(trials[Rpos].x - trials[Rpos - 1].x, power);
-
+		//curr_eps = pow(trials[Rpos].x - trials[Rpos - size_t(1)].x, power);
+	
 		// поиск поизиции в массиве
 		std::vector<Trial>::iterator it2 = trials.begin();        
 		for (it = trials.begin(); it - trials.begin() <= Rpos; it++) it2 = it;
 
-		double delta_z_pos = trials[Rpos].z - trials[Rpos - 1].z;
+		double delta_z_pos = trials[Rpos].z - trials[Rpos - size_t(1)].z;
 
 		int sgn = 0;
 		if (delta_z_pos < 0)
@@ -161,7 +210,7 @@ void MethodMult::solve_mult(double* y)
 		if (delta_z_pos > 0)
 			sgn = 1;
 
-		current.x = (trials[Rpos].x + trials[Rpos - 1].x) / 2 - sgn / (2 * r) * pow(delta_z_pos / M, n) ;
+		current.x = (trials[Rpos].x + trials[Rpos - size_t(1)].x) / 2 - sgn / (2 * r) * pow(fabs(delta_z_pos) / M, n) ;
 		// приведение координат
 		mapd(current.x, m, y, n, 1);
 		InsertScale(y);
@@ -169,8 +218,7 @@ void MethodMult::solve_mult(double* y)
 		current.z = Funk_mult(index_problem, y);  // значении функции в точках y
 		trials.insert(it2, current);
 
-		//out1.open("Grishagin.txt", std::ofstream::ios_base::app);  // печать в файл
-		//out1 << y[0] << " " << y[1] << std::endl;
+		out1 << y[0] << " " << y[1] << std::endl;
 
 		if (out_optimal[2] > current.z)
 		{
@@ -179,8 +227,10 @@ void MethodMult::solve_mult(double* y)
 			out_optimal[1] = y[1];
 			out_optimal[2] = current.z;
 		}
+		
 		itr++;
-		//out1.close();
 	}
 	std::cout << "itr = " << itr << std::endl;
+	//out1 <<trials.size() << std::endl;
+	out1.close();
 }

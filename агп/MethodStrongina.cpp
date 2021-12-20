@@ -1,4 +1,4 @@
-#include"Method_Strongina.h"
+#include"MethodStrongina.h"
 
 #include<iostream>
 
@@ -72,10 +72,11 @@ Method::Method(int _key, int _index_problem, std::vector<double> x_0, std::vecto
 	eps = _e;
 	r = _r;
 }
-void Method::solve()
+void Method::Solve()
 {
 	Trial current;
-	double M, Rmax, Rpos;
+	double M, Rmax;
+	size_t Rpos;
 	double curr_eps = second.x - first.x;
 	std::vector<Trial>::iterator it = trials.begin();
 	int itr = 0;
@@ -84,10 +85,10 @@ void Method::solve()
 	{
 		Rpos = 1;
 		M = fabs((trials[1].z - trials[0].z) / (trials[1].x - trials[0].x));
-		for (int i = 2; i < trials.size(); i++)
+		for (size_t i = 2; i < trials.size(); i++)
 		{
 			double max;
-			max = fabs((trials.at(i).z - trials.at(i - 1).z) / (trials.at(i).x - trials.at(i - 1).x));
+			max = fabs((trials[i].z - trials[i - size_t(1)].z) / (trials[i].x - trials[i - size_t(1)].x));
 			if (max > M)
 				M = max;
 		}
@@ -99,20 +100,20 @@ void Method::solve()
 		Rmax = M * (trials[1].x - trials[0].x) + (pow((trials[1].z - trials[0].z), 2) / (M * (trials[1].x - trials[0].x))) - 2 * (trials[1].z + trials[0].z);
 		for (int i = 2; i < trials.size(); i++)
 		{
-			double k = M * (trials[i].x - trials[i - 1].x);
-			double R = k + (pow((trials[i].z - trials[i - 1].z), 2) / k) - 2 * (trials[i].z + trials[i - 1].z);
+			double k = M * (trials[i].x - trials[i - size_t(1)].x);
+			double R = k + (pow((trials[i].z - trials[i - size_t(1)].z), 2) / k) - 2 * (trials[i].z + trials[i - size_t(1)].z);
 			if (R > Rmax)
 			{
 				Rmax = R;
 				Rpos = i;
 			}
 		}
-		curr_eps = trials[Rpos].x - trials[Rpos - 1].x;
+		curr_eps = trials[Rpos].x - trials[Rpos - size_t(1)].x;
 
 		std::vector<Trial>::iterator it2 = trials.begin();
 		for (it = trials.begin(); it - trials.begin() <= Rpos; it++) it2 = it;
 
-		current.x = (trials[Rpos].x + trials[Rpos - 1].x) / 2 - (trials[Rpos].z - trials[Rpos - 1].z) / (2 * M);
+		current.x = (trials[Rpos].x + trials[Rpos - 1].x) / 2 - (trials[Rpos].z - trials[Rpos - size_t(1)].z) / (2 * M);
 		current.z = Funk(key, index_problem, current.x);
 		trials.insert(it2, current);
 

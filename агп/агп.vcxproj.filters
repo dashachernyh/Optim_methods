@@ -39,13 +39,13 @@
     <ClInclude Include="HillProblemFamily.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="method_dual.h">
+    <ClInclude Include="Method_dual.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Map.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Method_mult.h">
+    <ClInclude Include="MethodMult.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Trial.h">
@@ -72,7 +72,16 @@
     <ClInclude Include="IConstrainedOptProblemFamily.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Method_Strongina.h">
+    <ClInclude Include="MethodStrongina.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="MethodMult_p.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="MethodMult_mixed_p.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Mixture.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -95,7 +104,7 @@
     <ClCompile Include="X_to_y.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
-    <ClCompile Include="Method_mult.cpp">
+    <ClCompile Include="MethodMult.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
     <ClCompile Include="GrishaginConstrainedProblem.cpp">
@@ -116,7 +125,22 @@
     <ClCompile Include="main.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
-    <ClCompile Include="Method_Strongina.cpp">
+    <ClCompile Include="MethodStrongina.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="MethodMult_mixed.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClCompile>
+    <ClCompile Include="MethodMult_mixed.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="MethodMult_p.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="Method_dual.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="MethodMult_mixed_p.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
   </ItemGroup>

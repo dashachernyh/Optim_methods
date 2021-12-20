@@ -1,11 +1,11 @@
+#pragma once 
 #include <iostream>
+#include<fstream>
 #include <conio.h>
-#include <fstream>
 
-#include "Method_Strongina.h" // алгоритм Стронгина
-#include "method_dual.h"  // алгоритм двойственный
-#include "Map.h"
-#include "Method_mult.h"  // алгоритм для ф-ии нескольких переменных
+#include "Method_dual.h"  // алгоритм двойственный
+#include "MethodMult_mixed_p.h"
+#include "MethodMult_mixed.h"
 
 bool Checked_method(double val_meth, double val_true, double eps)
 {
@@ -22,10 +22,10 @@ bool Checked_method_grish(std::vector<double> val_meth, std::vector<double> val_
 	else
 		return false;
 }
-
+ 
 int main()
 {
-	double E = 0.0001, r = 2.5;
+	double E = 0.001, r = 3.2;
 	int n = 2, m = 10;
 	vector<double> begin(20,0), end(20,0);  // значения начала и конца поискового интервала  для задач Hans, Hill
 	int k = 0;
@@ -33,8 +33,8 @@ int main()
 
 	std::ofstream out;
 	out.open("Graph.txt",  std::ofstream::ios_base::app);
-	while (k != 6) {
-		std::cout << " 1- hans, 2 - hill, 3 - hans mdual, 4 - hill mdual, 5 - mult_method, 6 - exit " << std::endl;
+	while (k != 9) {
+		std::cout << " 1- hans, 2 - hill, 3 - hans mdual, 4 - hill mdual, 5 - mult_method, 6 - mult_method_p, 7 - mult_method_mixed, 8 - mult_method_mixed_p, 9 - exit " << std::endl;
 		std::cin >> k;
 		switch (k) {
 		case 1:
@@ -48,7 +48,7 @@ int main()
 				Method met(k, index, begin, end, E, r);
 
 				// вызов метода
-				met.solve();
+				met.Solve();
 
 				std::cout << "HansProblem[" << index << "]" << std::endl;
 				// вывод истинных значений x,y задачи index
@@ -82,7 +82,7 @@ int main()
 				std::vector<double> a{0.0};
 				std::vector<double> b{ 1.0 };
 				Method met(k, index, a, b, E, r);
-				met.solve();
+				met.Solve();
 				
 				std::cout << "HillProblem[" << index << "]" << std::endl;
 				met.PrintTrueValueHill(index);
@@ -108,7 +108,7 @@ int main()
 			for (int index = 0; index < 20; index ++)
 			{
 				MethodDual met(k, index, begin, end, E, r);
-				met.solve_dual();
+				met.SolveDual();
 				
 				std::cout << "HansProblem[" << index << "]" << std::endl;
 				met.PrintTrueValueHans(index);
@@ -135,7 +135,7 @@ int main()
 				std::vector<double> a{ 0.0 };
 				std::vector<double> b{ 1.0 };
 				MethodDual met(k, index, a, b, E, r);
-				met.solve_dual();
+				met.SolveDual();
 				std::cout << "HillProblem[" << index << "]" << std::endl;
 				met.PrintTrueValueHill(index);
 				std::cout << "the best value on " << met.GetBestIndex() << " iterator" << std::endl;
@@ -158,13 +158,12 @@ int main()
 		{
 			count_true = 0;
 			out << "Mult" << std::endl;
+			int index = 0;
 			double* y = new double[n];
-			int key = 1;
-			int index = 1;
-			for (int index = 0; index < 50; index++)
-			{
+			//for (int index = 0; index < 100; index++)
+			//{
 				MethodMult met(index, y, 0, 1, E, r, n, m);
-				met.solve_mult(y);
+				met.SolveMult(y);
 				std::cout << "GrishaginProblem[" << index << "]" << std::endl;
 				met.PrintTrueValueGrishagin(index);
 				std::cout << "the best value on " << met.GetBestIndex() << " iterator" << std::endl;
@@ -177,9 +176,98 @@ int main()
 				}
 				else
 					out << "wrong" << std::endl;
-			}
+			//}
 			out << "count_true " << count_true << std::endl;
 			out << "Mult_finish" << std::endl;
+			break;
+		}
+		case 6:
+		{
+			count_true = 0;
+			out << "Mult_p" << std::endl;
+			double* y = new double[n];
+			int index = 0;
+			int p = 2;
+			//for (int index = 0; index < 100; index++)
+			//{
+				MethodMult_p met(index, y, 0, 1, E, r, n, m, p);
+				met.SolveMult_p(y);
+				std::cout << "GrishaginProblem[" << index << "]" << std::endl;
+				met.PrintTrueValueGrishagin(index);
+				std::cout << "the best value on " << met.GetBestIndex() << " iterator" << std::endl;
+				std::cout << "x*= " << met.GetOpt()[0] << " y*= " << met.GetOpt()[1] << "  " << " F(x*)= " << met.GetOpt()[2] << std::endl;
+				std::cout << std::endl;
+				if (Checked_method_grish(met.GetOpt(), met.GetTrueOpt_grish(index), E))
+				{
+					count_true++;
+					out << met.GetBestIndex() << std::endl;
+				}
+				else
+					out << "wrong" << std::endl;
+			//}
+			out << "count_true " << count_true << std::endl;
+			out << "Mult_p_finish" << std::endl;
+			break;
+		}
+		case 7:
+		{
+			int _step = 100;
+			int _alpha = 15;
+			Mixture _mixed(3, 1);
+			count_true = 0;
+			out << "Mult_mix" << std::endl;
+			int index = 0;
+			double* y = new double[n];
+			for (int index = 0; index < 100; index++)
+			{
+				MethodMult_mixed met(index, y, 0, 1, E, r, n, m, _step, _mixed, _alpha);
+				met.SolveMult_mixed(y);
+				std::cout << "GrishaginProblem[" << index << "]" << std::endl;
+				met.PrintTrueValueGrishagin(index);
+				std::cout << "the best value on " << met.GetBestIndex() << " iterator" << std::endl;
+				std::cout << "x*= " << met.GetOpt()[0] << " y*= " << met.GetOpt()[1] << "  " << " F(x*)= " << met.GetOpt()[2] << std::endl;
+				std::cout << std::endl;
+				if (Checked_method_grish(met.GetOpt(), met.GetTrueOpt_grish(index), E))
+				{
+					count_true++;
+					out << met.GetBestIndex() << std::endl;
+				}
+				else
+					out << "wrong" << std::endl;
+			}
+			out << "count_true " << count_true << std::endl;
+			out << "Mult_mixed_finish" << std::endl;
+			break;
+		}
+		case 8:
+		{
+			int _step = 50;
+			int _alpha = 15;
+			int p = 2;
+			Mixture _mixed(1, 3);
+			count_true = 0;
+			out << "Mult_mix_p" << std::endl;
+			int index = 0;
+			double* y = new double[n];
+			for (int index = 0; index < 100; index++)
+			{
+				MethodMult_mixed_p met(index, y, 0, 1, E, r, n, m, _step, _mixed, _alpha, p);
+				met.SolveMult_mixed_p(y);
+				std::cout << "GrishaginProblem[" << index << "]" << std::endl;
+				met.PrintTrueValueGrishagin(index);
+				std::cout << "the best value on " << met.GetBestIndex() << " iterator" << std::endl;
+				std::cout << "x*= " << met.GetOpt()[0] << " y*= " << met.GetOpt()[1] << "  " << " F(x*)= " << met.GetOpt()[2] << std::endl;
+				std::cout << std::endl;
+				if (Checked_method_grish(met.GetOpt(), met.GetTrueOpt_grish(index), E))
+				{
+					count_true++;
+					out << met.GetBestIndex() << std::endl;
+				}
+				else
+					out << "wrong" << std::endl;
+			}
+			out << "count_true " << count_true << std::endl;
+			out << "Mult_mixed_p_finish" << std::endl;
 			break;
 		}
 		}

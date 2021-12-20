@@ -14,4 +14,10 @@ struct Trial
 		else
 			return false;
 	}
+	bool operator < (const Trial& tr) // для функции sort
+	{
+		if (x < tr.x)return true;
+		else
+			return false;
+	}
 };
