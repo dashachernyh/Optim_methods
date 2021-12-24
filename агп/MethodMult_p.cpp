@@ -8,7 +8,7 @@
 
 #include"MethodMult_p.h"
 
-MethodMult_p::MethodMult_p(int _index_problem, double* y, double _a, double _b,
+MethodMult_p::MethodMult_p(int _task, int _index_problem, double* y, double _a, double _b,
 	double _e, double _r, int _n, int _m, int _p) : p(_p) {
 	a = _a;
 	b = _b;
@@ -18,6 +18,7 @@ MethodMult_p::MethodMult_p(int _index_problem, double* y, double _a, double _b,
 	m = _m;
 
 	Trial_thread current, first, second;
+	task = _task;
 	index_problem = _index_problem;
 	best_i = 0;
 	out_optimal = { 0, 0, 0 };                  // оптимальное решение нулевое
@@ -30,7 +31,7 @@ MethodMult_p::MethodMult_p(int _index_problem, double* y, double _a, double _b,
 	mapd(0, m, y, n, 1);
 	ScaleFunc(y[0]);
 	InsertScale(y);
-	first.z = Funk_mult(index_problem, y);  // вычисляем значение в этой точке 
+	first.z = Funk_mult(task, index_problem, y);  // вычисляем значение в этой точке 
 	trials_thread.push_back(first);
 	/*
 	//потоковая реализация, необходимо p интервалов (есть 1 либо 2 - если х_1 отлична от 0 и 1) нужно отсортировать точки 
@@ -43,24 +44,24 @@ MethodMult_p::MethodMult_p(int _index_problem, double* y, double _a, double _b,
 		next_point[j] = x_next;
 	}
 	sort(next_point.begin(), next_point.end());
-
+	*/
 	for (int j = 0; j < p - 1; j++) {
-		current.x = next_point[j];
+		current.x = (j + 1) / double(p);                        //next_point[j];
 		current.thread = 0;
 		mapd(current.x, m, y, n, 1);
 		InsertScale(y);
-		current.z = Funk_mult(index_problem, y);
+		current.z = Funk_mult(task, index_problem, y);
 		trials_thread.push_back(current);
-	}*/
+	}
 	
 	
-	current.x = 0.04;
+	/*current.x = 0.64;
 	current.thread = 0;
 	mapd(current.x, m, y, n, 1);
 	InsertScale(y);
-	current.z = Funk_mult(index_problem, y);
+	current.z = Funk_mult(task, index_problem, y);
 	trials_thread.push_back(current);
-	/*
+	
 	current.x = 0.38;
 	current.thread = 0;
 	mapd(current.x, m, y, n, 1);
@@ -93,7 +94,7 @@ MethodMult_p::MethodMult_p(int _index_problem, double* y, double _a, double _b,
 	second.thread = 0;
 	mapd(1, m, y, n, 1);
 	InsertScale(y);
-	second.z = Funk_mult(index_problem, y);
+	second.z = Funk_mult(task, index_problem, y);
 	trials_thread.push_back(second);
 
 	for (int i = 0; i < trials_thread.size(); i++)
@@ -116,9 +117,9 @@ void MethodMult_p::SolveMult_p(double* y)
 	double curr_eps = pow(trials_thread[1].x - trials_thread[0].x, power);
 	out_optimal[2] = trials_thread[0].z;
 
-	std::ofstream out1;
-	out1.open("Grishagin.txt", std::ofstream::ios_base::app);
-	std::vector<double> true_opt = GetTrueOpt_grish(index_problem);
+	//std::ofstream out1;
+	//out1.open("Grishagin.txt", std::ofstream::ios_base::app);
+	std::vector<double> true_opt = GetTrueOpt(task, index_problem);
 
 	while (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps)
 	//while (curr_eps > eps)
@@ -127,8 +128,8 @@ void MethodMult_p::SolveMult_p(double* y)
 		double d_z = fabs(trials_thread[1].z - trials_thread[0].z);
 		double d_x = fabs(trials_thread[1].x - trials_thread[0].x);
 		d_x = pow(d_x, power);
-		M = 230;
-		/*M = d_z / d_x;
+		//M = 50;
+		M = d_z / d_x;
 
 		for (size_t i = 2; i < trials_thread.size(); i++)      // поиск со 2 интервала
 		{
@@ -140,7 +141,7 @@ void MethodMult_p::SolveMult_p(double* y)
 				z_min = trials_thread[i].z;
 		}
 		if (M == 0)
-			M = 1;*/
+			M = 1;
 
 		for (size_t i = 1; i < trials_thread.size(); i++)       // поиск со 2 интервала
 		{
@@ -217,12 +218,12 @@ void MethodMult_p::SolveMult_p(double* y)
 			new_trial.thread = vect_current[j].z;
 			mapd(new_trial.x, m, y, n, 1);
 			InsertScale(y);
-			new_trial.z = Funk_mult(index_problem, y);
+			new_trial.z = Funk_mult(task, index_problem, y);
 			std::vector<Trial_thread>::iterator it2 = find(trials_thread.begin(), trials_thread.end(), elem_of_ch[j]);
 			size_t pos_elem_of_ch = std::distance(trials_thread.begin(), it2);
 			trials_thread.insert(it2, new_trial);
 
-			out1 << y[0] << " " << y[1] <<" "<< new_trial.thread<<std::endl;
+			//out1 << y[0] << " " << y[1] <<" "<< new_trial.thread<<std::endl;
 
 			if (out_optimal[2] > new_trial.z)
 			{
@@ -238,5 +239,5 @@ void MethodMult_p::SolveMult_p(double* y)
 
 	std::cout << "itr = " << itr << std::endl;
 	//out1 << trials_thread.size() << std::endl;
-	out1.close();
+	//out1.close();
 }

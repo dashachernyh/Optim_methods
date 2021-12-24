@@ -13,32 +13,38 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Исходные файлы\Grishagin">
+      <UniqueIdentifier>{00c46f50-0be5-4ffe-bed9-66a21e58bd88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\GKLS">
+      <UniqueIdentifier>{d1fc8316-0f77-4a51-be61-b5b0e70693a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Grishagin">
+      <UniqueIdentifier>{39671ba5-aaca-43de-b7a3-aa72d6575ad9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\GKLS">
+      <UniqueIdentifier>{9b7a0ccd-2abb-4383-b102-74ab0c7740f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\OptProblem">
+      <UniqueIdentifier>{9bb6f329-ef94-4ba8-a285-09b1c2d9ea93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Hill">
+      <UniqueIdentifier>{3a601914-6721-461e-9e98-a7ba0d604591}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Hansen">
+      <UniqueIdentifier>{d218d481-d334-4376-8f7d-b30465a031e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Hill">
+      <UniqueIdentifier>{0a614908-0d93-4abb-ac0f-42a809ecc25e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\OptProblem">
+      <UniqueIdentifier>{3a21f672-e1f7-4e47-8655-1ef27d039a1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Hansen">
+      <UniqueIdentifier>{53765dd6-46d9-455d-bde7-d58294ba3f1d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="IGeneralOptProblem.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="IOptProblem.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="HansenProblem.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="IOptProblemFamily.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="IGeneralOptProblemFamily.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="HansenProblemFamily.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="HillProblem.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="HillProblemFamily.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="Method_dual.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -49,27 +55,6 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Trial.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="GrishaginConstrainedProblem.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="GrishaginConstrainedProblemFamily.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="GrishaginOption.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="GrishaginProblemFamily.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="grishagin_function.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="IConstrainedOptProblem.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="IConstrainedOptProblemFamily.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="MethodStrongina.h">
@@ -84,64 +69,139 @@
     <ClInclude Include="Mixture.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="grishagin_function.hpp">
+      <Filter>Файлы заголовков\Grishagin</Filter>
+    </ClInclude>
+    <ClInclude Include="GrishaginConstrainedProblem.hpp">
+      <Filter>Файлы заголовков\Grishagin</Filter>
+    </ClInclude>
+    <ClInclude Include="GrishaginConstrainedProblemFamily.hpp">
+      <Filter>Файлы заголовков\Grishagin</Filter>
+    </ClInclude>
+    <ClInclude Include="GrishaginOption.hpp">
+      <Filter>Файлы заголовков\Grishagin</Filter>
+    </ClInclude>
+    <ClInclude Include="GrishaginProblemFamily.hpp">
+      <Filter>Файлы заголовков\Grishagin</Filter>
+    </ClInclude>
+    <ClInclude Include="gkls_random.hpp">
+      <Filter>Файлы заголовков\GKLS</Filter>
+    </ClInclude>
+    <ClInclude Include="GKLSConstrainedProblem.hpp">
+      <Filter>Файлы заголовков\GKLS</Filter>
+    </ClInclude>
+    <ClInclude Include="GKLSConstrainedProblemFamily.hpp">
+      <Filter>Файлы заголовков\GKLS</Filter>
+    </ClInclude>
+    <ClInclude Include="GKLSOption.hpp">
+      <Filter>Файлы заголовков\GKLS</Filter>
+    </ClInclude>
+    <ClInclude Include="GKLSProblem.hpp">
+      <Filter>Файлы заголовков\GKLS</Filter>
+    </ClInclude>
+    <ClInclude Include="GKLSProblemFamily.hpp">
+      <Filter>Файлы заголовков\GKLS</Filter>
+    </ClInclude>
+    <ClInclude Include="HansenProblem.hpp">
+      <Filter>Файлы заголовков\Hansen</Filter>
+    </ClInclude>
+    <ClInclude Include="HansenProblemFamily.hpp">
+      <Filter>Файлы заголовков\Hansen</Filter>
+    </ClInclude>
+    <ClInclude Include="HillProblem.hpp">
+      <Filter>Файлы заголовков\Hill</Filter>
+    </ClInclude>
+    <ClInclude Include="HillProblemFamily.hpp">
+      <Filter>Файлы заголовков\Hill</Filter>
+    </ClInclude>
+    <ClInclude Include="IConstrainedOptProblem.hpp">
+      <Filter>Файлы заголовков\OptProblem</Filter>
+    </ClInclude>
+    <ClInclude Include="IConstrainedOptProblemFamily.hpp">
+      <Filter>Файлы заголовков\OptProblem</Filter>
+    </ClInclude>
+    <ClInclude Include="IGeneralOptProblem.hpp">
+      <Filter>Файлы заголовков\OptProblem</Filter>
+    </ClInclude>
+    <ClInclude Include="IGeneralOptProblemFamily.hpp">
+      <Filter>Файлы заголовков\OptProblem</Filter>
+    </ClInclude>
+    <ClInclude Include="IOptProblem.hpp">
+      <Filter>Файлы заголовков\OptProblem</Filter>
+    </ClInclude>
+    <ClInclude Include="IOptProblemFamily.hpp">
+      <Filter>Файлы заголовков\OptProblem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="IOptProblem.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="IGeneralOptProblem.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="IOptProblemFamily.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="IGeneralOptProblemFamily.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="HillProblem.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="X_to_y.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="MethodMult.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="GrishaginConstrainedProblem.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="GrishaginOption.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="grishagin_function.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="IConstrainedOptProblem.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="IConstrainedOptProblemFamily.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="MethodStrongina.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
     <ClCompile Include="MethodMult_mixed.h">
       <Filter>Файлы заголовков</Filter>
     </ClCompile>
-    <ClCompile Include="MethodMult_mixed.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="MethodMult_p.cpp">
-      <Filter>Файлы ресурсов</Filter>
+    <ClCompile Include="main.cpp">
+      <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="Method_dual.cpp">
-      <Filter>Файлы ресурсов</Filter>
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="MethodMult.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="MethodMult_mixed.cpp">
+      <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="MethodMult_mixed_p.cpp">
-      <Filter>Файлы ресурсов</Filter>
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="MethodMult_p.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="MethodStrongina.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="X_to_y.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="grishagin_function.cpp">
+      <Filter>Исходные файлы\Grishagin</Filter>
+    </ClCompile>
+    <ClCompile Include="GrishaginConstrainedProblem.cpp">
+      <Filter>Исходные файлы\Grishagin</Filter>
+    </ClCompile>
+    <ClCompile Include="GrishaginOption.cpp">
+      <Filter>Исходные файлы\Grishagin</Filter>
+    </ClCompile>
+    <ClCompile Include="gkls_random.cpp">
+      <Filter>Исходные файлы\GKLS</Filter>
+    </ClCompile>
+    <ClCompile Include="GKLSConstrainedProblem.cpp">
+      <Filter>Исходные файлы\GKLS</Filter>
+    </ClCompile>
+    <ClCompile Include="GKLSOption.cpp">
+      <Filter>Исходные файлы\GKLS</Filter>
+    </ClCompile>
+    <ClCompile Include="GKLSProblem.cpp">
+      <Filter>Исходные файлы\GKLS</Filter>
+    </ClCompile>
+    <ClCompile Include="IConstrainedOptProblem.cpp">
+      <Filter>Исходные файлы\OptProblem</Filter>
+    </ClCompile>
+    <ClCompile Include="IConstrainedOptProblemFamily.cpp">
+      <Filter>Исходные файлы\OptProblem</Filter>
+    </ClCompile>
+    <ClCompile Include="IGeneralOptProblem.cpp">
+      <Filter>Исходные файлы\OptProblem</Filter>
+    </ClCompile>
+    <ClCompile Include="IGeneralOptProblemFamily.cpp">
+      <Filter>Исходные файлы\OptProblem</Filter>
+    </ClCompile>
+    <ClCompile Include="IOptProblem.cpp">
+      <Filter>Исходные файлы\OptProblem</Filter>
+    </ClCompile>
+    <ClCompile Include="IOptProblemFamily.cpp">
+      <Filter>Исходные файлы\OptProblem</Filter>
+    </ClCompile>
+    <ClCompile Include="HillProblem.cpp">
+      <Filter>Исходные файлы\Hill</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

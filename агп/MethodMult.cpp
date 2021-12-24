@@ -12,28 +12,46 @@ double MethodMult::Funk_test(int index_problem, double* y)
 	return y[0]*y[0]+y[1]*y[1] - 2;  // гиперболойд элиптический мин в т (0, 0, -2)
 }
 
-std::vector<double> MethodMult::GetTrueOpt_grish(int index_problem)
+std::vector<double> MethodMult::GetTrueOpt(int task, int index_problem)
 {	
 	std::vector<double> optimumPoint;
-	optimumPoint = grishFam[index_problem]->GetOptimumPoint();
+	if (task == 0) {
+		optimumPoint = grish_fam[index_problem]->GetOptimumPoint();
+	}
+	else
+	{
+		optimumPoint = gkls_fam[index_problem]->GetOptimumPoint();
+	}
 	std::vector<double> point{ optimumPoint[0], optimumPoint[1] };
 	return point;
 }
 
-void MethodMult:: PrintTrueValueGrishagin(int index_problem)
+void MethodMult::PrintTrueValue(int task, int index_problem)
 {
 	vector<double> optimumPoint;
-	optimumPoint = grishFam[index_problem]->GetOptimumPoint();
-	std::cout << "x1_min= " << optimumPoint[0] << " x2_min= " << optimumPoint[1] << "  F_min= " << grishFam[index_problem]->GetOptimumValue() << std::endl;
+	if (task == 0) {
+		optimumPoint = grish_fam[index_problem]->GetOptimumPoint();
+		std::cout << "x1_min= " << optimumPoint[0] << " x2_min= " << optimumPoint[1];
+		std::cout << "  F_min= " << grish_fam[index_problem]->GetOptimumValue() << std::endl;
+	}
+	else
+	{
+		optimumPoint = gkls_fam[index_problem]->GetOptimumPoint();
+		std::cout << "x1_min= " << optimumPoint[0] << " x2_min= " << optimumPoint[1];
+		std::cout << "  F_min= " << gkls_fam[index_problem]->GetOptimumValue() << std::endl;
+	}
 }
 
-// вычисляет значение задачи Гришагина 
-double MethodMult::Funk_mult(int index_problem, double* y)
+// вычисляет значение задачи Гришагина/Сергеева 
+double MethodMult::Funk_mult(int task, int index_problem, double* y)
 {
 	vector<double> val;
 	val.push_back(y[0]);
 	val.push_back(y[1]);
-	return grishFam[index_problem]->ComputeFunction(val);
+	if (task == 0)
+		return grish_fam[index_problem]->ComputeFunction(val);
+	else 
+		return gkls_fam[index_problem]->ComputeFunction(val);
 }
 
 // масштабирует область поиска (куб)
@@ -63,10 +81,11 @@ void MethodMult::InsertScale(double* y)
 	}
 }
 
-MethodMult::MethodMult(int _index_problem, double *y, double _a, double _b, double _e, double _r,
+MethodMult::MethodMult(int _task, int _index_problem, double *y, double _a, double _b, double _e, double _r,
 	int _n, int _m) :a(_a), b(_b), eps(_e), r(_r), n(_n), m(_m)
 {
 	Trial current, first, second;
+	task = _task;
 	index_problem = _index_problem;
 	best_i = 0;
 	out_optimal = { 0, 0, 0 };                  // оптимальное решение нулевое
@@ -78,15 +97,15 @@ MethodMult::MethodMult(int _index_problem, double *y, double _a, double _b, doub
 	mapd(0, m, y, n, 1); 
 	ScaleFunc(y[0]);  // для всех точек один раз считаем
 	InsertScale(y);
-	first.z = Funk_mult(index_problem, y);  // вычисляем значение в этой точке 
+	first.z = Funk_mult(task, index_problem, y);  // вычисляем значение в этой точке 
 	trials.push_back(first);
 	
-	current.x = 0.04;
+	/*current.x = 0.64;
 	mapd(current.x, m, y, n, 1);
 	InsertScale(y);
-	current.z = Funk_mult(index_problem, y); 
+	current.z = Funk_mult(task, index_problem, y); 
 	trials.push_back(current);
-	/*
+	
 	current.x = 0.38;
 	mapd(current.x, m, y, n, 1);
 	InsertScale(y);
@@ -112,21 +131,21 @@ MethodMult::MethodMult(int _index_problem, double *y, double _a, double _b, doub
 	trials.push_back(current);*/
 
 	
-	/*double x_1;
+	double x_1;
 	x_1 = gen() % 100 / (100 * 1.0);         // выбираем произвольную точку поиска на интервале [0, 1]
 	if (x_1 != 1 && x_1 != 0)              // если выбранная точка x1 лежит внутри интервала [0, 1]
 	{
 		current.x = x_1;
 		mapd(x_1, m, y, n, 1);
 		InsertScale(y);
-		current.z = Funk_mult(index_problem, y);
+		current.z = Funk_mult(task, index_problem, y);
 		trials.push_back(current);
-	}*/
+	}
 	
 	second.x = 1;
 	mapd(1, m, y, n, 1);
 	InsertScale(y);
-	second.z = Funk_mult(index_problem, y);
+	second.z = Funk_mult(task, index_problem, y);
 	trials.push_back(second);
 
 	for (int i = 0; i < trials.size(); i++)
@@ -150,10 +169,10 @@ void MethodMult::SolveMult(double* y)
 	double curr_eps = pow(trials[1].x - trials[0].x, power);
 	out_optimal[2] = trials[0].z;
 
-	std::vector<double> true_opt = GetTrueOpt_grish(index_problem);
+	std::vector<double> true_opt = GetTrueOpt(task, index_problem);
 
-	std::ofstream out1;
-	out1.open("Grishagin.txt", std::ofstream::ios_base::app);  // печать в файл
+	//std::ofstream out1;
+	//out1.open("Grishagin.txt", std::ofstream::ios_base::app);  // печать в файл
 
 	while(fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1])>eps)
 	//while (curr_eps > eps)
@@ -164,8 +183,8 @@ void MethodMult::SolveMult(double* y)
 		double d_z = fabs(trials[1].z - trials[0].z);   
 		double d_x = fabs(trials[1].x - trials[0].x);
 		d_x = pow(d_x, power);
-		M = 230;
-		/*M = d_z / d_x;
+		//M = 50;
+		M = d_z / d_x;
 
 		for (size_t i = 2; i < trials.size(); i++)      // поиск со 2 интервала
 		{
@@ -177,7 +196,7 @@ void MethodMult::SolveMult(double* y)
 				z_min = trials[i].z;
 		}
 		if (M == 0)
-			M = 1;*/
+			M = 1;
 
 		// значение на интервале 1
 		Rmax = d_x + (pow(d_z / (r * M), 2) / d_x)
@@ -215,10 +234,11 @@ void MethodMult::SolveMult(double* y)
 		mapd(current.x, m, y, n, 1);
 		InsertScale(y);
 
-		current.z = Funk_mult(index_problem, y);  // значении функции в точках y
+		current.z = Funk_mult(task, index_problem, y);  // значении функции в точках y
 		trials.insert(it2, current);
 
-		out1 << y[0] << " " << y[1] << std::endl;
+		//out1 << y[0] << " " << y[1] << std::endl;
+		//out1 << "itr= " << itr << " M= " << M << " R= " << Rmax << " x=" << current.x << " z= " << current.z << std::endl;
 
 		if (out_optimal[2] > current.z)
 		{
@@ -232,5 +252,5 @@ void MethodMult::SolveMult(double* y)
 	}
 	std::cout << "itr = " << itr << std::endl;
 	//out1 <<trials.size() << std::endl;
-	out1.close();
+	//out1.close();
 }

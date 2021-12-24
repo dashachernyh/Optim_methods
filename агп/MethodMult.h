@@ -1,7 +1,9 @@
 #pragma once
 #include "GrishaginOption.hpp"
 #include "GrishaginProblemFamily.hpp"
-#include"Trial.h"
+#include "GKLSOption.hpp"
+#include "GKLSProblemFamily.hpp"
+#include "Trial.h"
 #include "Map.h"
 
 class MethodMult
@@ -15,7 +17,9 @@ protected:
 	double eps, r;
 	double a, b;                       //интервал куба
 	double koef[2];                    // коэффициенты масштабирования koef[0] для сдвига, koef[1] для увеличения масштаба
-	TGrishaginProblemFamily grishFam;  //Семейство задач
+	TGrishaginProblemFamily grish_fam;  //Семейство задач
+	TGKLSProblemFamily gkls_fam;
+	int task;                          // 0 - Гришагин, 1 - Сергеев
 public:                         
 	MethodMult()
 	{
@@ -26,16 +30,16 @@ public:
 		eps = 0;
 		r = 0;
 		koef[0] = koef[1] = 0;
-		index_problem = best_i = 0;
+		index_problem = best_i = task = 0;
 	}
-	MethodMult(int _index_problem, double* y, double _a,  double _b, double _e, double _r, int _n, int _m);
+	MethodMult(int _task, int _index_problem, double* y, double _a,  double _b, double _e, double _r, int _n, int _m);
 	std::vector<double> GetOpt() { return out_optimal; }  // возвращает оптимальное значение
 	int GetBestIndex() { return best_i; }
 	void SolveMult(double * y);
 	void ScaleFunc(double y);                             // масштабирует область поиска (куб)
 	void InsertScale(double* y);                          // применение масштабирование к y
-	void PrintTrueValueGrishagin(int index_problem); 
-	double Funk_mult(int index_problem, double* y);
-	std::vector<double> GetTrueOpt_grish(int index_problem);
+	void PrintTrueValue(int task, int index_problem); 
+	double Funk_mult(int task, int index_problem, double* y);
+	std::vector<double> GetTrueOpt(int task, int index_problem);
 	double Funk_test(int index_problem, double* y);
 };

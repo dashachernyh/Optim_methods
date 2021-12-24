@@ -8,7 +8,7 @@
 
 #include"MethodMult_mixed_p.h"
 
-MethodMult_mixed_p::MethodMult_mixed_p(int _index_problem, double* y, double _a, double _b, double _e, double _r,
+MethodMult_mixed_p::MethodMult_mixed_p(int _task, int _index_problem, double* y, double _a, double _b, double _e, double _r,
 	int _n, int _m, const int _on_step, Mixture _mix, int _alpha, int _p) : on_step(_on_step), mix(_mix), alpha(_alpha)
 {
 	a = _a;
@@ -20,6 +20,7 @@ MethodMult_mixed_p::MethodMult_mixed_p(int _index_problem, double* y, double _a,
 	p = _p;
 
 	Trial_thread current, first, second;
+	task = _task;
 	index_problem = _index_problem;
 	best_i = 0;
 	out_optimal = { 0, 0, 0 };                  // оптимальное решение нулевое
@@ -32,8 +33,16 @@ MethodMult_mixed_p::MethodMult_mixed_p(int _index_problem, double* y, double _a,
 	mapd(0, m, y, n, 1);
 	ScaleFunc(y[0]);
 	InsertScale(y);
-	first.z = Funk_mult(index_problem, y);  // вычисляем значение в этой точке 
+	first.z = Funk_mult(task, index_problem, y);  // вычисляем значение в этой точке 
 	trials_thread.push_back(first);
+
+	/*
+	current.x = 0.34;
+	current.thread = 0;
+	mapd(current.x, m, y, n, 1);
+	InsertScale(y);
+	current.z = Funk_mult(task, index_problem, y);
+	trials_thread.push_back(current);*/
 	
 	//потоковая реализация, необходимо p интервалов (есть 1 либо 2 - если х_1 отлична от 0 и 1) нужно отсортировать точки
 	std::vector<double> next_point(p - size_t(1));
@@ -51,15 +60,15 @@ MethodMult_mixed_p::MethodMult_mixed_p(int _index_problem, double* y, double _a,
 		current.thread = 0;
 		mapd(current.x, m, y, n, 1);
 		InsertScale(y);
-		current.z = Funk_mult(index_problem, y);
+		current.z = Funk_mult(task, index_problem, y);
 		trials_thread.push_back(current);
 	}
-	
+
 	second.x = 1;
 	second.thread = 0;
 	mapd(1, m, y, n, 1);
 	InsertScale(y);
-	second.z = Funk_mult(index_problem, y);
+	second.z = Funk_mult(task, index_problem, y);
 	trials_thread.push_back(second);
 }
 
@@ -85,7 +94,7 @@ void MethodMult_mixed_p::SolveMult_mixed_p(double* y)
 
 	std::ofstream out1;
 	out1.open("Grishagin.txt", std::ofstream::ios_base::app);
-	std::vector<double> true_opt = GetTrueOpt_grish(index_problem);
+	std::vector<double> true_opt = GetTrueOpt(task, index_problem);
 
 	while (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps)
 	//while (curr_eps > eps)
@@ -237,7 +246,7 @@ void MethodMult_mixed_p::SolveMult_mixed_p(double* y)
 			new_trial.thread = vect_current[j].z;
 			mapd(new_trial.x, m, y, n, 1);
 			InsertScale(y);
-			new_trial.z = Funk_mult(index_problem, y);
+			new_trial.z = Funk_mult(task, index_problem, y);
 			std::vector<Trial_thread>::iterator it2 = find(trials_thread.begin(), trials_thread.end(), elem_of_ch[j]);
 			size_t pos_elem_of_ch = std::distance(trials_thread.begin(), it2);
 			trials_thread.insert(it2, new_trial);

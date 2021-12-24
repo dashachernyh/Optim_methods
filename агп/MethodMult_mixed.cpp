@@ -8,7 +8,7 @@
 
 #include "MethodMult_mixed.h"
 
-MethodMult_mixed::MethodMult_mixed(int _index_problem, double* y, double _a, double _b, double _e, double _r,
+MethodMult_mixed::MethodMult_mixed(int _task, int _index_problem, double* y, double _a, double _b, double _e, double _r,
 	int _n, int _m, const int _on_step, Mixture _mix, int _alpha) : on_step(_on_step), mix(_mix), alpha(_alpha)
 {
 	a = _a;
@@ -19,6 +19,7 @@ MethodMult_mixed::MethodMult_mixed(int _index_problem, double* y, double _a, dou
 	m = _m;
 
 	Trial current, first, second;
+	task = _task;
 	index_problem = _index_problem;
 	best_i = 0;
 	out_optimal = { 0, 0, 0 };                  // оптимальное решение нулевое
@@ -29,30 +30,31 @@ MethodMult_mixed::MethodMult_mixed(int _index_problem, double* y, double _a, dou
 	mapd(0, m, y, n, 1);
 	ScaleFunc(y[0]);  // для всех точек один раз считаем
 	InsertScale(y);
-	first.z = Funk_mult(index_problem, y);  // вычисляем значение в этой точке 
+	first.z = Funk_mult(task, index_problem, y);  // вычисляем значение в этой точке 
 	trials.push_back(first);
 
-	current.x = 0.64;
+	/*
+	current.x = 0.34;
 	mapd(current.x, m, y, n, 1);
 	InsertScale(y);
-	current.z = Funk_mult(index_problem, y);
-	trials.push_back(current);
+	current.z = Funk_mult(task, index_problem, y);
+	trials.push_back(current);*/
 
-	/*double x_1;
+	double x_1;
 	x_1 = gen() % 100 / (100 * 1.0);         // выбираем произвольную точку поиска на интервале [0, 1]
 	if (x_1 != 1 && x_1 != 0)              // если выбранная точка x1 лежит внутри интервала [0, 1]
 	{
 		current.x = x_1;
 		mapd(x_1, m, y, n, 1);
 		InsertScale(y);
-		current.z = Funk_mult(index_problem, y);
+		current.z = Funk_mult(task, index_problem, y);
 		trials.push_back(current);
-	}*/
+	}
 
 	second.x = 1;
 	mapd(1, m, y, n, 1);
 	InsertScale(y);
-	second.z = Funk_mult(index_problem, y);
+	second.z = Funk_mult(task, index_problem, y);
 	trials.push_back(second);
 }
 
@@ -76,8 +78,8 @@ void MethodMult_mixed::SolveMult_mixed(double* y)
 	out_optimal[2] = trials[0].z;
 
 	std::ofstream out1;
-	//out1.open("Grishagin.txt", std::ofstream::ios_base::app);  // печать в файл
-	std::vector<double> true_opt = GetTrueOpt_grish(index_problem);
+	out1.open("Grishagin.txt", std::ofstream::ios_base::app);  // печать в файл
+	std::vector<double> true_opt = GetTrueOpt(task, index_problem);
 
 	while (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps)
 	//while (curr_eps > eps)
@@ -85,7 +87,7 @@ void MethodMult_mixed::SolveMult_mixed(double* y)
 		if (itr >= on_step) {
 			if (k == change)
 			{
-				if (!flag) {
+				if (!flag && mix.alg2!=0) {
 					flag = 1;
 					change = mix.alg2;
 				}
@@ -162,7 +164,7 @@ void MethodMult_mixed::SolveMult_mixed(double* y)
 			}
 		}
 
-		curr_eps = pow(trials[Rpos].x - trials[Rpos - size_t(1)].x, power);
+		//curr_eps = pow(trials[Rpos].x - trials[Rpos - size_t(1)].x, power);
 
 		// поиск поизиции в массиве
 		std::vector<Trial>::iterator it2 = trials.begin();
@@ -181,11 +183,12 @@ void MethodMult_mixed::SolveMult_mixed(double* y)
 		mapd(current.x, m, y, n, 1);
 		InsertScale(y);
 
-		current.z = Funk_mult(index_problem, y);  // значении функции в точках y
+		current.z = Funk_mult(task, index_problem, y);  // значении функции в точках y
 		trials.insert(it2, current);
 
 
 		//out1 << y[0] << " " << y[1] << std::endl;
+		out1 << "itr= " << itr << " M= " << M << " R= " << Rmax << " x=" << current.x << " z= " << current.z << std::endl;
 
 		if (out_optimal[2] > current.z)
 		{
@@ -196,7 +199,6 @@ void MethodMult_mixed::SolveMult_mixed(double* y)
 		}
 		if (itr >= on_step) k++;
 		itr++;
-		
 		/*std::cout << itr << " pos = "<<Rpos<< std::endl;
 		for (int i = 0; i < trials.size(); i++)
 		{
@@ -207,5 +209,5 @@ void MethodMult_mixed::SolveMult_mixed(double* y)
 	//out1.open("Grishagin.txt", std::ofstream::ios_base::app);
 	std::cout << "itr = " << itr << std::endl;
 	//out1 << trials.size() << std::endl;
-	//out1.close();
+	out1.close();
 }

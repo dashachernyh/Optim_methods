@@ -116,21 +116,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="GKLSConstrainedProblem.hpp" />
+    <ClInclude Include="GKLSConstrainedProblemFamily.hpp" />
+    <ClInclude Include="GKLSOption.hpp" />
+    <ClInclude Include="GKLSProblem.hpp" />
+    <ClInclude Include="GKLSProblemFamily.hpp" />
+    <ClInclude Include="gkls_random.hpp" />
     <ClInclude Include="GrishaginConstrainedProblem.hpp" />
-    <ClInclude Include="HansenProblem.hpp" />
     <ClInclude Include="GrishaginConstrainedProblemFamily.hpp" />
     <ClInclude Include="GrishaginOption.hpp" />
     <ClInclude Include="GrishaginProblemFamily.hpp" />
     <ClInclude Include="grishagin_function.hpp" />
+    <ClInclude Include="HansenProblem.hpp" />
+    <ClInclude Include="HansenProblemFamily.hpp" />
     <ClInclude Include="HillProblem.hpp" />
     <ClInclude Include="HillProblemFamily.hpp" />
     <ClInclude Include="IConstrainedOptProblem.hpp" />
     <ClInclude Include="IConstrainedOptProblemFamily.hpp" />
-    <ClInclude Include="IGeneralOptProblemFamily.hpp" />
-    <ClInclude Include="IOptProblemFamily.hpp" />
-    <ClInclude Include="HansenProblemFamily.hpp" />
-    <ClInclude Include="IOptProblem.hpp" />
     <ClInclude Include="IGeneralOptProblem.hpp" />
+    <ClInclude Include="IGeneralOptProblemFamily.hpp" />
+    <ClInclude Include="IOptProblem.hpp" />
+    <ClInclude Include="IOptProblemFamily.hpp" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MethodMult_mixed_p.h" />
     <ClInclude Include="MethodMult_p.h" />
@@ -141,23 +147,27 @@
     <ClInclude Include="Trial.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="HillProblem.cpp" />
-    <ClCompile Include="IConstrainedOptProblem.cpp" />
-    <ClCompile Include="IOptProblemFamily.cpp" />
-    <ClCompile Include="IOptProblem.cpp" />
-    <ClCompile Include="IGeneralOptProblem.cpp" />
-    <ClCompile Include="IGeneralOptProblemFamily.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="MethodMult_mixed_p.cpp" />
-    <ClCompile Include="MethodMult_p.cpp" />
-    <ClCompile Include="MethodMult_mixed.cpp" />
-    <ClCompile Include="MethodMult.cpp" />
+    <ClCompile Include="GKLSConstrainedProblem.cpp" />
+    <ClCompile Include="GKLSOption.cpp" />
+    <ClCompile Include="GKLSProblem.cpp" />
+    <ClCompile Include="gkls_random.cpp" />
     <ClCompile Include="GrishaginConstrainedProblem.cpp" />
     <ClCompile Include="GrishaginOption.cpp" />
     <ClCompile Include="grishagin_function.cpp" />
+    <ClCompile Include="HillProblem.cpp" />
+    <ClCompile Include="IConstrainedOptProblem.cpp" />
     <ClCompile Include="IConstrainedOptProblemFamily.cpp" />
-    <ClCompile Include="MethodStrongina.cpp" />
+    <ClCompile Include="IGeneralOptProblem.cpp" />
+    <ClCompile Include="IGeneralOptProblemFamily.cpp" />
+    <ClCompile Include="IOptProblem.cpp" />
+    <ClCompile Include="IOptProblemFamily.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MethodMult.cpp" />
+    <ClCompile Include="MethodMult_mixed.cpp" />
+    <ClCompile Include="MethodMult_mixed_p.cpp" />
+    <ClCompile Include="MethodMult_p.cpp" />
     <ClCompile Include="MethodMult_mixed.h" />
+    <ClCompile Include="MethodStrongina.cpp" />
     <ClCompile Include="Method_dual.cpp" />
     <ClCompile Include="X_to_y.cpp" />
   </ItemGroup>

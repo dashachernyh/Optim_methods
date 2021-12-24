@@ -40,9 +40,9 @@ struct Characteristic {
 		r = _r;
 		pos = _pos;
 	}
-	bool operator <  (const Characteristic& ch2)
+	bool operator <  (const Characteristic& ch)
 	{
-		return r < ch2.r;
+		return r < ch.r;
 	}
 
 };
@@ -58,7 +58,7 @@ public:
 		p = 0;
 
 	}
-	MethodMult_p(int _index_problem, double* y, double _a, double _b, double _e,
+	MethodMult_p(int _task, int _index_problem, double* y, double _a, double _b, double _e,
 		double _r, int _n, int _m, const int p);
 	void SolveMult_p(double* y);
 };
