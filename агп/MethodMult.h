@@ -6,6 +6,10 @@
 #include "Trial.h"
 #include "Map.h"
 
+#include <random>
+#include <ctime>
+#include <algorithm>
+
 class MethodMult
 {
 protected:

@@ -1,6 +1,6 @@
-#include<iostream>
-
 #include"Method_dual.h"
+
+#include<iostream>
 
 
 MethodDual::MethodDual(int _key, int _index_problem, std::vector<double> x_0, std::vector<double> x_n, double _e, double _r)

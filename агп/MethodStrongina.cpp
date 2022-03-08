@@ -40,7 +40,7 @@ double Method::Funk(int key, int index_problem, double x)
 {
 	if (key == 3)
 		key = 1;
-	else if (key == 4)
+	if (key == 4)
 		key = 2;
 	switch (key)
 	{

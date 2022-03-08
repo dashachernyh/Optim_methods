@@ -3,9 +3,11 @@
 #include<fstream>
 #include <conio.h>
 
-#include "Method_dual.h"  // алгоритм двойственный
-#include "MethodMult_mixed_p.h"
-#include "MethodMult_mixed.h"
+#include "Method_dual.h"  // include MethodStrongina
+#include "MethodMult_mixed.h"  // include MethodMult
+#include "MethodMult_mixed_p.h"  // include MethodMult_p // include MethodMult
+#include "MethodMult_DualLipsh.h"  // include MethodMult
+#include "MethodMult_DualLipsh_p.h" // include MethodMult_p
 
 bool Checked_method(double val_meth, double val_true, double eps)
 {
@@ -33,9 +35,12 @@ int main()
 
 	std::ofstream out;
 	out.open("Graph.txt",  std::ofstream::ios_base::app);
-	while (k != 9) {
-		std::cout << " 1- hans, 2 - hill, 3 - hans mdual, 4 - hill mdual, 5 - mult_method, 6 - mult_method_p, 7 - mult_method_mixed, 8 - mult_method_mixed_p, 9 - exit " << std::endl;
+	while (k != 11) {
+		std::cout << " 1- hans mstrong, 2 - hill mstrong, 3 - hans mdual, 4 - hill mdual, 5 - mult_method, 6 - mult_method_p,";
+		std::cout << "\n7 - mult_method_mixed, 8 - mult_method_mixed_p, 9 - mult_metgod_dualLipsh, 10- mult_metgod_dualLipsh_p, 11 - exit " << std::endl;
 		std::cin >> k;
+		/*std::cout << "Enter parameters eps, r "<<std::endl;
+		std::cin >> E >> r;*/
 		switch (k) {
 		case 1:
 		{
@@ -218,22 +223,22 @@ int main()
 			Mixture _mixed(1, 2);
 			count_true = 0;
 			out << "Mult_mix" << std::endl;
-			int index = 69;
+			int index = 0;
 			int task = 0; // 0 - Grishagin, 1 - GKLS
 			double* y = new double[n];
 			for (int index = 0; index < 100; index++)
 			{
-				MethodMult_mixed met(task, index, y, 0, 1, E, r, n, m, _step, _mixed, _alpha);
-				met.SolveMult_mixed(y);
+				auto  metod = std::make_shared<MethodMult_mixed>(task, index, y, 0, 1, E, r, n, m, _step, _mixed, _alpha);
+				metod->SolveMult_mixed(y, 1);
 				std::cout << "GrishaginProblem[" << index << "]" << std::endl;
-				met.PrintTrueValue(task, index);
-				std::cout << "the best value on " << met.GetBestIndex() << " iterator" << std::endl;
-				std::cout << "x*= " << met.GetOpt()[0] << " y*= " << met.GetOpt()[1] << "  " << " F(x*)= " << met.GetOpt()[2] << std::endl;
+				metod->PrintTrueValue(task, index);
+				std::cout << "the best value on " << metod->GetBestIndex() << " iterator" << std::endl;
+				std::cout << "x*= " << metod->GetOpt()[0] << " y*= " << metod->GetOpt()[1] << "  " << " F(x*)= " << metod->GetOpt()[2] << std::endl;
 				std::cout << std::endl;
-				if (Checked_method_mult(met.GetOpt(), met.GetTrueOpt(task, index), E))
+				if (Checked_method_mult(metod->GetOpt(), metod->GetTrueOpt(task, index), E))
 				{
 					count_true++;
-					out << met.GetBestIndex() << std::endl;
+					out << metod->GetBestIndex() << std::endl;
 				}
 				else
 					out << "wrong" << std::endl;
@@ -272,6 +277,69 @@ int main()
 			}
 			out << "count_true " << count_true << std::endl;
 			out << "Mult_mixed_p_finish" << std::endl;
+			break;
+		}
+		case 9:
+		{
+			count_true = 0;
+			out << "Mult_DualLipsh" << std::endl;
+			int index = 0;
+			int task = 0; // 0 - Grishagin, 1 - GKLS
+			double r_loc = 1.4;
+			/*std::cout << "r_loc = " << std::endl;
+			std::cin >> r_loc;*/
+			double* y = new double[n];
+			for (int index = 0; index < 100; index++)
+			{
+				MethodMult_DualLipsh met(task, index, y, 0, 1, E, r_loc, r, n, m);
+				met.SolveMult_DualLipsh(y);
+				std::cout << "GrishaginProblem[" << index << "]" << std::endl;
+				met.PrintTrueValue(task, index);
+				std::cout << "the best value on " << met.GetBestIndex() << " iterator" << std::endl;
+				std::cout << "x*= " << met.GetOpt()[0] << " y*= " << met.GetOpt()[1] << "  " << " F(x*)= " << met.GetOpt()[2] << std::endl;
+				std::cout << std::endl;
+				if (Checked_method_mult(met.GetOpt(), met.GetTrueOpt(task, index), E))
+				{
+					count_true++;
+					out << met.GetBestIndex() << std::endl;
+				}
+				else
+					out << "wrong" << std::endl;
+			}
+			out << "count_true " << count_true << std::endl;
+			out << "Mult_DualLipsh_finish" << std::endl;
+			break;
+		}
+		case 10:
+		{
+			count_true = 0;
+			out << "Mult_DualLipsh_p" << std::endl;
+			int index = 0;
+			int task = 0; // 0 - Grishagin, 1 - GKLS
+			double r_loc = 1.4;
+			int p = 6;
+			/*std::cout << "r_loc = " << std::endl;
+			std::cin >> r_loc;*/
+			double* y = new double[n];
+			for (int index = 0; index < 100; index++)
+			{
+				MethodMult_DualLipsh_p met(task, index, y, 0, 1, E, r_loc, r, n, m, p);
+				met.SolveMult_DualLipsh_p(y);
+				std::cout << "GrishaginProblem[" << index << "]" << std::endl;
+				met.PrintTrueValue(task, index);
+				std::cout << "the best value on " << met.GetBestIndex() << " iterator" << std::endl;
+				std::cout << "x*= " << met.GetOpt()[0] << " y*= " << met.GetOpt()[1] << "  " << " F(x*)= " << met.GetOpt()[2] << std::endl;
+				std::cout << std::endl;
+				if (Checked_method_mult(met.GetOpt(), met.GetTrueOpt(task, index), E))
+				{
+					count_true++;
+					out << met.GetBestIndex() << std::endl;
+				}
+				else
+					out << "wrong" << std::endl;
+			}
+			out << "count_true " << count_true << std::endl;
+			out << "Mult_DualLipsh_p_finish" << std::endl;
 			break;
 		}
 		}

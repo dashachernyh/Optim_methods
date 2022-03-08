@@ -1,6 +1,8 @@
 #pragma once
 #include "MethodMult.h"
 
+#include <omp.h>
+
 struct Trial_thread
 {
 	double x, z;
@@ -33,16 +35,16 @@ struct Trial_thread
 };
 
 struct Characteristic {
-	double r;
+	double R;
 	int pos;
 
-	Characteristic(double _r = 0, int _pos = 0) {
-		r = _r;
+	Characteristic(double _R = 0, int _pos = 0) {
+		R = _R;
 		pos = _pos;
 	}
 	bool operator <  (const Characteristic& ch)
 	{
-		return r < ch.r;
+		return R < ch.R;
 	}
 
 };
@@ -56,7 +58,6 @@ public:
 	MethodMult_p()
 	{
 		p = 0;
-
 	}
 	MethodMult_p(int _task, int _index_problem, double* y, double _a, double _b, double _e,
 		double _r, int _n, int _m, const int p);
