@@ -32,27 +32,45 @@ MethodMult_p::MethodMult_p(int _task, int _index_problem, double* y, double _a, 
 	first.z = Funk_mult(task, index_problem, y);
 	trials_thread.push_back(first);
 	
-	//потоковая реализация, необходимо p интервалов (есть 1 либо 2 - если х_1 отлична от 0 и 1) нужно отсортировать точки 
-	std::vector<double> next_point(p - size_t(1));
-	for (int j = 0; j < p - 1; j++) {
-		x_next = gen() % 100 / (100 * 1.0);
-		while (x_next == 1 || x_next == 0) 
-		{  // если выбранная точка x_next - концы интервала
-			x_next = gen() % 100 / (100 * 1.0);
-		}
-		next_point[j] = x_next;
-	}
-	sort(next_point.begin(), next_point.end());
+	current.x = 0.38;
+	mapd(current.x, m, y, n, 1);
+	InsertScale(y);
+	current.z = Funk_mult(task, index_problem, y);
+	trials_thread.push_back(current);
 
-	
-	for (int j = 0; j < p - 1; j++) {
-		current.x = next_point[j];  //(j + 1) / double(p);
-		current.thread = 0;
-		mapd(current.x, m, y, n, 1);
-		InsertScale(y);
-		current.z = Funk_mult(task, index_problem, y);
-		trials_thread.push_back(current);
-	}
+	current.x = 0.54;
+	mapd(current.x, m, y, n, 1);
+	InsertScale(y);
+	current.z = Funk_mult(task, index_problem, y);
+	trials_thread.push_back(current);
+
+	current.x = 0.6;
+	mapd(current.x, m, y, n, 1);
+	InsertScale(y);
+	current.z = Funk_mult(task, index_problem, y);
+	trials_thread.push_back(current);
+
+	//потоковая реализация, необходимо p интервалов (есть 1 либо 2 - если х_1 отлична от 0 и 1) нужно отсортировать точки 
+	//std::vector<double> next_point(p - size_t(1));
+	//for (int j = 0; j < p - 1; j++) {
+	//	x_next = gen() % 100 / (100 * 1.0);
+	//	while (x_next == 1 || x_next == 0) 
+	//	{  // если выбранная точка x_next - концы интервала
+	//		x_next = gen() % 100 / (100 * 1.0);
+	//	}
+	//	next_point[j] = x_next;
+	//}
+	//sort(next_point.begin(), next_point.end());
+
+	//
+	//for (int j = 0; j < p - 1; j++) {
+	//	current.x = next_point[j];  //(j + 1) / double(p);
+	//	current.thread = 0;
+	//	mapd(current.x, m, y, n, 1);
+	//	InsertScale(y);
+	//	current.z = Funk_mult(task, index_problem, y);
+	//	trials_thread.push_back(current);
+	//}
 	
 	second.x = 1;
 	second.thread = 0;
@@ -60,9 +78,6 @@ MethodMult_p::MethodMult_p(int _task, int _index_problem, double* y, double _a, 
 	InsertScale(y);
 	second.z = Funk_mult(task, index_problem, y);
 	trials_thread.push_back(second);
-
-	/*for (int i = 0; i < trials_thread.size(); i++)
-		std::cout << trials_thread[i].x << " " << trials_thread[i].z << std::endl;*/
 }
 
 void MethodMult_p::SolveMult_p(double* y)
@@ -84,8 +99,8 @@ void MethodMult_p::SolveMult_p(double* y)
 	double curr_eps = pow(trials_thread[1].x - trials_thread[0].x, power);
 	out_optimal[2] = trials_thread[0].z;
 
-	//std::ofstream out1;
-	//out1.open("Grishagin.txt", std::ofstream::ios_base::app);
+	std::ofstream out1;
+	out1.open("Grishagin_p.txt", std::ofstream::ios_base::app);
 
 	std::vector<double> true_opt = GetTrueOpt(task, index_problem);
 
@@ -95,7 +110,8 @@ void MethodMult_p::SolveMult_p(double* y)
 		double d_z = fabs(trials_thread[1].z - trials_thread[0].z);
 		double d_x = fabs(trials_thread[1].x - trials_thread[0].x);
 		d_x = pow(d_x, power);
-		M = d_z / d_x;  //M = 50;
+		M = d_z / d_x;  
+		//M = 50;
 
 		for (size_t i = 2; i < trials_thread.size(); i++)  // поиск со 2 интервала
 		{
@@ -197,7 +213,7 @@ void MethodMult_p::SolveMult_p(double* y)
 			size_t pos_elem_of_ch = std::distance(trials_thread.begin(), it2);
 			trials_thread.insert(it2, new_trial);
 
-			//out1 << y[0] << " " << y[1] <<" "<< new_trial.thread<<std::endl;
+			out1 << y[0] << " " << y[1] <<" "<< new_trial.thread<<std::endl;
 
 			if (out_optimal[2] > new_trial.z)
 			{
@@ -213,5 +229,5 @@ void MethodMult_p::SolveMult_p(double* y)
 
 	std::cout << "itr = " << itr << std::endl;
 	//out1 << trials_thread.size() << std::endl;
-	//out1.close();
+	out1.close();
 }

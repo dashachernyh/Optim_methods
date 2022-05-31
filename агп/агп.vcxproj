@@ -154,6 +154,7 @@
     <ClCompile Include="GKLSOption.cpp" />
     <ClCompile Include="GKLSProblem.cpp" />
     <ClCompile Include="gkls_random.cpp" />
+    <ClInclude Include="Graph.h" />
     <ClCompile Include="GrishaginConstrainedProblem.cpp" />
     <ClCompile Include="GrishaginOption.cpp" />
     <ClCompile Include="grishagin_function.cpp" />
@@ -173,7 +174,7 @@
     </ClCompile>
     <ClCompile Include="MethodMult_mixed_p.cpp" />
     <ClCompile Include="MethodMult_p.cpp" />
-    <ClCompile Include="MethodMult_mixed.h" />
+    <ClInclude Include="MethodMult_mixed.h" />
     <ClCompile Include="MethodStrongina.cpp" />
     <ClCompile Include="Method_dual.cpp" />
     <ClCompile Include="X_to_y.cpp" />

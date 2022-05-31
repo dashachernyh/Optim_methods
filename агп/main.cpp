@@ -8,6 +8,9 @@
 #include "MethodMult_mixed_p.h"  // include MethodMult_p // include MethodMult
 #include "MethodMult_DualLipsh.h"  // include MethodMult
 #include "MethodMult_DualLipsh_p.h" // include MethodMult_p
+#include "Graph.h"
+
+
 
 bool Checked_method(double val_meth, double val_true, double eps)
 {
@@ -162,8 +165,8 @@ int main()
 		case 5:
 		{
 			count_true = 0;
-			out << "Mult" << std::endl;
-			int index = 69;
+			//out << "Mult" << std::endl;
+			int index = 0;
 			int task = 0; // 0 - Grishagin, 1 - GKLS
 			double* y = new double[n];
 			for (int index = 0; index < 100; index++)
@@ -183,8 +186,8 @@ int main()
 				else
 					out << "wrong" << std::endl;
 			}
-			out << "count_true " << count_true << std::endl;
-			out << "Mult_finish" << std::endl;
+			//out << "count_true " << count_true << std::endl;
+			//out << "Mult_finish" << std::endl;
 			break;
 		}
 		case 6:
@@ -193,11 +196,11 @@ int main()
 			out << "Mult_p" << std::endl;
 			double* y = new double[n];
 			int index = 69;
-			int task = 0; // 0 - Grishagin, 1 - GKLS
-			int p = 6;
-			for (int index = 0; index < 100; index++)
+			int task = 1; // 0 - Grishagin, 1 - GKLS
+			int p = 2;
+			for (int index = 0; index < 1; index++)
 			{
-				MethodMult_p met(task, index, y, 0, 1, E, r, n, m, p);
+				MethodMult_p met(task, index, y, -1, 1, E, r, n, m, p);
 				met.SolveMult_p(y);
 				std::cout << "GrishaginProblem[" << index << "]" << std::endl;
 				met.PrintTrueValue(task, index);
@@ -218,11 +221,11 @@ int main()
 		}
 		case 7:
 		{
-			int _step = 150;
+			int _step =300;
 			int _alpha = 15;
-			Mixture _mixed(1, 2);
+			Mixture _mixed(1,2);
 			count_true = 0;
-			out << "Mult_mix" << std::endl;
+			//out << "Mult_mix" << std::endl;
 			int index = 0;
 			int task = 0; // 0 - Grishagin, 1 - GKLS
 			double* y = new double[n];
@@ -243,24 +246,24 @@ int main()
 				else
 					out << "wrong" << std::endl;
 			}
-			out << "count_true " << count_true << std::endl;
-			out << "Mult_mixed_finish" << std::endl;
+			//out << "count_true " << count_true << std::endl;
+			//out << "Mult_mixed_finish" << std::endl;
 			break;
 		}
 		case 8:
 		{
-			int _step = 100;
+			int _step = 250;
 			int _alpha = 15;
 			int p = 2;
 			Mixture _mixed(1, 2);
 			count_true = 0;
 			out << "Mult_mix_p" << std::endl;
 			int index = 0;
-			int task = 0; // 0 - Grishagin, 1 - GKLS
+			int task = 1; // 0 - Grishagin, 1 - GKLS
 			double* y = new double[n];
-			for (int index = 0; index < 100; index++)
+			for (int index = 0; index < 1; index++)
 			{
-				MethodMult_mixed_p met(task, index, y, 0, 1, E, r, n, m, _step, _mixed, _alpha, p);
+				MethodMult_mixed_p met(task, index, y, -1, 1, E, r, n, m, _step, _mixed, _alpha, p);
 				met.SolveMult_mixed_p(y);
 				std::cout << "GrishaginProblem[" << index << "]" << std::endl;
 				met.PrintTrueValue(task, index);
@@ -282,16 +285,16 @@ int main()
 		case 9:
 		{
 			count_true = 0;
-			out << "Mult_DualLipsh" << std::endl;
+			//out << "Mult_DualLipsh" << std::endl;
 			int index = 0;
 			int task = 0; // 0 - Grishagin, 1 - GKLS
-			double r_loc = 1.4;
+			double r_loc = 1.7;
 			/*std::cout << "r_loc = " << std::endl;
 			std::cin >> r_loc;*/
 			double* y = new double[n];
 			for (int index = 0; index < 100; index++)
 			{
-				MethodMult_DualLipsh met(task, index, y, 0, 1, E, r_loc, r, n, m);
+				MethodMult_DualLipsh met(task, index, y, 0, 1, E, r_loc, r, n, m); //GKLS [-1; 1]
 				met.SolveMult_DualLipsh(y);
 				std::cout << "GrishaginProblem[" << index << "]" << std::endl;
 				met.PrintTrueValue(task, index);
@@ -306,22 +309,22 @@ int main()
 				else
 					out << "wrong" << std::endl;
 			}
-			out << "count_true " << count_true << std::endl;
-			out << "Mult_DualLipsh_finish" << std::endl;
+			//out << "count_true " << count_true << std::endl;
+			//out << "Mult_DualLipsh_finish" << std::endl;
 			break;
 		}
 		case 10:
 		{
 			count_true = 0;
-			out << "Mult_DualLipsh_p" << std::endl;
+			//out << "Mult_DualLipsh_p" << std::endl;
 			int index = 0;
 			int task = 0; // 0 - Grishagin, 1 - GKLS
-			double r_loc = 1.4;
-			int p = 6;
+			double r_loc = 1.7;
+			int p = 4;
 			/*std::cout << "r_loc = " << std::endl;
 			std::cin >> r_loc;*/
 			double* y = new double[n];
-			for (int index = 0; index < 100; index++)
+			for (int index = 0; index < 1; index++)
 			{
 				MethodMult_DualLipsh_p met(task, index, y, 0, 1, E, r_loc, r, n, m, p);
 				met.SolveMult_DualLipsh_p(y);
@@ -338,12 +341,18 @@ int main()
 				else
 					out << "wrong" << std::endl;
 			}
-			out << "count_true " << count_true << std::endl;
-			out << "Mult_DualLipsh_p_finish" << std::endl;
+			//out << "count_true " << count_true << std::endl;
+			//out << "Mult_DualLipsh_p_finish" << std::endl;
 			break;
 		}
 		}
 	}
 	out.close();
+ int count = 400;
+//double a = -1;
+//double b = 1;
+//double h = (b - a) / count;
+//std::vector<double> x, y, z;
+//grid_build(x, y, z, a, b, 0, h);
 	_getch();
 }

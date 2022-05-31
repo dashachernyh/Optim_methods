@@ -25,8 +25,8 @@ void MethodMult_DualLipsh::SolveMult_DualLipsh(double* y)
 	double ro = (1 - 1 / r_glob) / (1 - 1 / r_loc) * (1 - 1 / r_glob) / (1 - 1 / r_loc);
 
 	// печать в файл
-	//std::ofstream out1;
-	//out1.open("Grishagin.txt", std::ofstream::ios_base::app);
+	std::ofstream out1;
+	out1.open("Grishagin.txt", std::ofstream::ios_base::app);
 
 	std::vector<double> true_opt = GetTrueOpt(task, index_problem);
 
@@ -119,7 +119,7 @@ void MethodMult_DualLipsh::SolveMult_DualLipsh(double* y)
 		current.z = Funk_mult(task, index_problem, y);  // значении функции в точках y
 		trials.insert(it2, current);
 
-		//out1 << y[0] << " " << y[1] << std::endl;
+		out1 << y[0] << " " << y[1] << std::endl;
 		
 		if (out_optimal[2] > current.z)
 		{
@@ -134,5 +134,5 @@ void MethodMult_DualLipsh::SolveMult_DualLipsh(double* y)
 
 	std::cout << "itr = " << itr << std::endl;
 	//out1 <<trials.size() << std::endl;
-	//out1.close();
+	out1.close();
 }

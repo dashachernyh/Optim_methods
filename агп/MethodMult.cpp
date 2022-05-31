@@ -95,12 +95,26 @@ MethodMult::MethodMult(int _task, int _index_problem, double *y, double _a, doub
 	first.z = Funk_mult(task, index_problem, y);  // вычисл€ем значение в этой точке 
 	trials.push_back(first);
 	
-	/* 0.64 0.38 0.5 0.63 0. 91
-	current.x = 0.91;
+	// 0.64 0.38 0.5 0.63 0. 91
+	/*current.x = 0.5;
 	mapd(current.x, m, y, n, 1);
 	InsertScale(y);
-	current.z = Funk_mult(index_problem, y);
+	current.z = Funk_mult(task, index_problem, y);
 	trials.push_back(current);*/
+
+	/*current.x = 0.54;
+	mapd(current.x, m, y, n, 1);
+	InsertScale(y);
+	current.z = Funk_mult(task, index_problem, y);
+	trials.push_back(current);
+
+	current.x = 0.6;
+	mapd(current.x, m, y, n, 1);
+	InsertScale(y);
+	current.z = Funk_mult(task, index_problem, y);
+	trials.push_back(current);*/
+
+	
 
 	double x_1;
 	x_1 = gen() % 100 / (100 * 1.0);  // выбираем произвольную точку поиска на интервале [0, 1]
@@ -138,12 +152,13 @@ void MethodMult::SolveMult(double* y)
 	out_optimal[2] = trials[0].z;
 
 	// печать в файл
-	//std::ofstream out1;
-	//out1.open("Grishagin.txt", std::ofstream::ios_base::app);
+	std::ofstream out1;
+	out1.open("Grishagin.txt", std::ofstream::ios_base::app);
+	
 
 	std::vector<double> true_opt = GetTrueOpt(task, index_problem);
 
-	while(fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1])>eps)  //while (curr_eps > eps)
+	 while (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps)//while (curr_eps > eps)
 	{
 		Rpos = 1;
 		
@@ -151,7 +166,8 @@ void MethodMult::SolveMult(double* y)
 		double d_z = fabs(trials[1].z - trials[0].z);   
 		double d_x = fabs(trials[1].x - trials[0].x);
 		d_x = pow(d_x, power);
-		M = d_z / d_x;  //M = 50;
+		M = d_z / d_x;
+		//M = 50;
 
 		for (size_t i = 2; i < trials.size(); i++)  // поиск со 2 интервала
 		{
@@ -206,8 +222,8 @@ void MethodMult::SolveMult(double* y)
 		current.z = Funk_mult(task, index_problem, y);  // значении функции в точках y
 		trials.insert(it2, current);
 
-		//out1 << y[0] << " " << y[1] << std::endl;
-		//out1 << "itr= " << itr << " M= " << M << " R= " << Rmax << " x=" << current.x << " z= " << current.z << std::endl;
+		out1 << y[0] << " " << y[1] << std::endl;
+		//out1 << "itr= " << itr <<  " y0 = "<<y[0]<<" y1 = "<<y[1]<<" z= " << current.z << std::endl;
 
 		if (out_optimal[2] > current.z)
 		{
@@ -220,6 +236,5 @@ void MethodMult::SolveMult(double* y)
 		itr++;
 	}
 	std::cout << "itr = " << itr << std::endl;
-	//out1 <<trials.size() << std::endl;
-	//out1.close();
+	out1.close();
 }

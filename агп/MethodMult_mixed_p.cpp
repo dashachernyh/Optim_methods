@@ -33,8 +33,8 @@ void MethodMult_mixed_p::SolveMult_mixed_p(double* y)
 	double curr_eps = pow(trials_thread[1].x - trials_thread[0].x, power);
 	out_optimal[2] = trials_thread[0].z;
 
-	/*std::ofstream out1;
-	out1.open("Grishagin.txt", std::ofstream::ios_base::app);*/
+	std::ofstream out1;
+	out1.open("Grishagin_p.txt", std::ofstream::ios_base::app);
 	std::vector<double> true_opt = GetTrueOpt(task, index_problem);
 
 	while (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps)  //while (curr_eps > eps)
@@ -196,7 +196,7 @@ void MethodMult_mixed_p::SolveMult_mixed_p(double* y)
 			size_t pos_elem_of_ch = std::distance(trials_thread.begin(), it2);
 			trials_thread.insert(it2, new_trial);
 
-			//out1 << y[0] << " " << y[1] << " " << new_trial.thread << std::endl;
+			out1 << y[0] << " " << y[1] << " " << new_trial.thread << std::endl;
 
 			if (out_optimal[2] > new_trial.z)
 			{
@@ -212,6 +212,6 @@ void MethodMult_mixed_p::SolveMult_mixed_p(double* y)
 	}
 
 	std::cout << "itr = " << itr << std::endl;
-	/*out1 << trials_thread.size() << std::endl;
-	out1.close();*/
+	out1 << trials_thread.size() << std::endl;
+	out1.close();
 }

@@ -30,8 +30,8 @@ void MethodMult_mixed::SolveMult_mixed(double* y, int a)
 	double curr_eps = pow(trials[1].x - trials[0].x, power);
 	out_optimal[2] = trials[0].z;
 
-	//std::ofstream out1;
-	//out1.open("Grishagin.txt", std::ofstream::ios_base::app);  // печать в файл
+	std::ofstream out1;
+	out1.open("Grishagin.txt", std::ofstream::ios_base::app);  // печать в файл
 	std::vector<double> true_opt = GetTrueOpt(task, index_problem);
 
 	while (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps)  //while (curr_eps > eps)
@@ -141,7 +141,7 @@ void MethodMult_mixed::SolveMult_mixed(double* y, int a)
 		current.z = Funk_mult(task, index_problem, y);  // значении функции в точках y
 		trials.insert(it2, current);
 
-		//out1 << y[0] << " " << y[1] << std::endl;
+		out1 << y[0] << " " << y[1] << std::endl;
 		
 		if (out_optimal[2] > current.z)
 		{
@@ -155,7 +155,6 @@ void MethodMult_mixed::SolveMult_mixed(double* y, int a)
 	}
 
 	std::cout << "itr = " << itr << std::endl;
-	//out1.open("Grishagin.txt", std::ofstream::ios_base::app);
 	//out1 << trials.size() << std::endl;
-	//out1.close();
+	out1.close();
 }
