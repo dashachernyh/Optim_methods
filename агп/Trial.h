@@ -20,4 +20,11 @@ struct Trial
 		else
 			return false;
 	}
+
+	friend Trial min(const Trial& tr, const Trial& tr_other) {
+		if (tr.z <= tr_other.z)
+			return tr;
+		else
+			return tr_other;
+	}
 };

@@ -43,6 +43,12 @@
     <Filter Include="Исходные файлы\Hansen">
       <UniqueIdentifier>{53765dd6-46d9-455d-bde7-d58294ba3f1d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Исходные файлы\Shekel">
+      <UniqueIdentifier>{60c3606a-25f5-40fd-94a8-edeb457365c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Shekel">
+      <UniqueIdentifier>{6b5850e9-87fd-4040-b156-7f2a02bd1a04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Method_dual.h">
@@ -147,6 +153,24 @@
     <ClInclude Include="Graph.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="ShekelProblem.hpp">
+      <Filter>Файлы заголовков\Shekel</Filter>
+    </ClInclude>
+    <ClInclude Include="ShekelProblemFamily.hpp">
+      <Filter>Файлы заголовков\Shekel</Filter>
+    </ClInclude>
+    <ClInclude Include="Method_SearchRoot.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Method_AGP_ASR.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="MethodMult_SearchRoot.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="MethodMult_AGP_ASR.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -219,6 +243,21 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="MethodMult_DualLipsh_p.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="ShekelProblem.cpp">
+      <Filter>Исходные файлы\Shekel</Filter>
+    </ClCompile>
+    <ClCompile Include="Method_SearchRoot.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Method_AGP_ASR.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="MethodMult_SearchRoot.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="MethodMult_AGP_ASR.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

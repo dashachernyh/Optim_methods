@@ -4,10 +4,11 @@
 #include<fstream>
 
 
-MethodMult_p::MethodMult_p(int _task, int _index_problem, double* y, double _a, double _b,
-	double _e, double _r, int _n, int _m, int _p) : p(_p) {
+void MethodMult_p::Init_p(int _task, int _index_problem, double* y, double _a, double _b,
+	double _e, double _r, int _n, int _m, int _p){
 	a = _a;
 	b = _b;
+	p = _p;
 	eps = _e;
 	r = _r;
 	n = _n;
@@ -29,55 +30,60 @@ MethodMult_p::MethodMult_p(int _task, int _index_problem, double* y, double _a, 
 	ScaleFunc(y[0]);
 	InsertScale(y);
 	// вычисляем значение в этой точке
-	first.z = Funk_mult(task, index_problem, y);
+	first.z = Funk_mult(y);
 	trials_thread.push_back(first);
 	
-	current.x = 0.38;
+	/*current.x = 0.5;
 	mapd(current.x, m, y, n, 1);
 	InsertScale(y);
-	current.z = Funk_mult(task, index_problem, y);
-	trials_thread.push_back(current);
-
-	current.x = 0.54;
-	mapd(current.x, m, y, n, 1);
-	InsertScale(y);
-	current.z = Funk_mult(task, index_problem, y);
+	current.z = Funk_mult(y);
 	trials_thread.push_back(current);
 
 	current.x = 0.6;
 	mapd(current.x, m, y, n, 1);
 	InsertScale(y);
-	current.z = Funk_mult(task, index_problem, y);
+	current.z = Funk_mult(y);
 	trials_thread.push_back(current);
 
-	//потоковая реализация, необходимо p интервалов (есть 1 либо 2 - если х_1 отлична от 0 и 1) нужно отсортировать точки 
-	//std::vector<double> next_point(p - size_t(1));
-	//for (int j = 0; j < p - 1; j++) {
-	//	x_next = gen() % 100 / (100 * 1.0);
-	//	while (x_next == 1 || x_next == 0) 
-	//	{  // если выбранная точка x_next - концы интервала
-	//		x_next = gen() % 100 / (100 * 1.0);
-	//	}
-	//	next_point[j] = x_next;
-	//}
-	//sort(next_point.begin(), next_point.end());
+	current.x = 0.8;
+	mapd(current.x, m, y, n, 1);
+	InsertScale(y);
+	current.z = Funk_mult(y);
+	trials_thread.push_back(current);*/
 
-	//
-	//for (int j = 0; j < p - 1; j++) {
-	//	current.x = next_point[j];  //(j + 1) / double(p);
-	//	current.thread = 0;
-	//	mapd(current.x, m, y, n, 1);
-	//	InsertScale(y);
-	//	current.z = Funk_mult(task, index_problem, y);
-	//	trials_thread.push_back(current);
-	//}
+	//потоковая реализация, необходимо p интервалов (есть 1 либо 2 - если х_1 отлична от 0 и 1) нужно отсортировать точки 
+	std::vector<double> next_point(p - size_t(1));
+	for (int j = 0; j < p - 1; j++) {
+		x_next = gen() % 100 / (100 * 1.0);
+		while (x_next == 1 || x_next == 0) 
+		{  // если выбранная точка x_next - концы интервала
+			x_next = gen() % 100 / (100 * 1.0);
+		}
+		next_point[j] = x_next;
+	}
+	sort(next_point.begin(), next_point.end());
+
+	
+	for (int j = 0; j < p - 1; j++) {
+		current.x = next_point[j];  //(j + 1) / double(p);
+		current.thread = 0;
+		mapd(current.x, m, y, n, 1);
+		InsertScale(y);
+		current.z = Funk_mult(y);
+		trials_thread.push_back(current);
+	}
 	
 	second.x = 1;
 	second.thread = 0;
 	mapd(1, m, y, n, 1);
 	InsertScale(y);
-	second.z = Funk_mult(task, index_problem, y);
+	second.z = Funk_mult(y);
 	trials_thread.push_back(second);
+}
+
+void MethodMult_p::ClearMethod_p() {
+	trials_thread.clear();
+	out_optimal.clear();
 }
 
 void MethodMult_p::SolveMult_p(double* y)
@@ -87,14 +93,14 @@ void MethodMult_p::SolveMult_p(double* y)
 	int itr = 0;  // счетчик итераций
 	std::vector<Characteristic> charact(p);
 	std::vector<Trial_thread>::iterator it = trials_thread.begin();  // для поиска позиции добавления нового испытания в векторе trials
-	
+
 																	 // минимальное значение функции
 	double z_min = trials_thread[0].z;
 	for (size_t i = 1; i < trials_thread.size(); i++) {
 		if (z_min > trials_thread[i].z)
 			z_min = trials_thread[i].z;
 	}
-	
+
 	double power = 1 / double(n);
 	double curr_eps = pow(trials_thread[1].x - trials_thread[0].x, power);
 	out_optimal[2] = trials_thread[0].z;
@@ -102,7 +108,7 @@ void MethodMult_p::SolveMult_p(double* y)
 	std::ofstream out1;
 	out1.open("Grishagin_p.txt", std::ofstream::ios_base::app);
 
-	std::vector<double> true_opt = GetTrueOpt(task, index_problem);
+	std::vector<double> true_opt = GetTrueOpt();
 
 	while (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps)  //while (curr_eps > eps)
 	{
@@ -110,7 +116,7 @@ void MethodMult_p::SolveMult_p(double* y)
 		double d_z = fabs(trials_thread[1].z - trials_thread[0].z);
 		double d_x = fabs(trials_thread[1].x - trials_thread[0].x);
 		d_x = pow(d_x, power);
-		M = d_z / d_x;  
+		M = d_z / d_x;
 		//M = 50;
 
 		for (size_t i = 2; i < trials_thread.size(); i++)  // поиск со 2 интервала
@@ -207,13 +213,13 @@ void MethodMult_p::SolveMult_p(double* y)
 			new_trial.thread = (int)vect_current[j].z;
 			mapd(new_trial.x, m, y, n, 1);
 			InsertScale(y);
-			new_trial.z = Funk_mult(task, index_problem, y);
+			new_trial.z = Funk_mult(y);
 
 			std::vector<Trial_thread>::iterator it2 = find(trials_thread.begin(), trials_thread.end(), elem_of_ch[j]);
 			size_t pos_elem_of_ch = std::distance(trials_thread.begin(), it2);
 			trials_thread.insert(it2, new_trial);
 
-			out1 << y[0] << " " << y[1] <<" "<< new_trial.thread<<std::endl;
+			out1 << y[0] << " " << y[1] << " " << new_trial.thread << std::endl;
 
 			if (out_optimal[2] > new_trial.z)
 			{

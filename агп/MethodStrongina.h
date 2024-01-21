@@ -8,39 +8,47 @@
 #include "HansenProblemFamily.hpp"
 #include "HillProblem.hpp"
 #include "HillProblemFamily.hpp"
+#include "ShekelProblem.hpp"
+#include "ShekelProblemFamily.hpp"
 
 class Method
 {
 protected:
 	std::vector<Trial> trials;
 	Trial optimum;
-	Trial first;
-	Trial second;
 	int index_problem;
 	int best_i;
 	int key;
 	double eps, r;
 	THillProblemFamily hillFam;
 	THansenProblemFamily hansFam;
+	TShekelProblemFamily shekelFam;
+	//double zpos;
+
 public:
 	Method() {
 		Trial zero;
 		zero.x = 0;
 		zero.z = 0;
-		optimum = first = second = zero;
+		optimum = zero;
 		key = 0;
-		index_problem = best_i= 0;
+		index_problem = best_i= -1;
 		r = eps = 0;
 	};
-
-	Method(int _key, int index_problem, std::vector<double> x_0, std::vector<double> x_n, double _e, double _r);
+	void Clear() {
+		trials.clear();
+		best_i = -1;
+		optimum.x = NULL;
+		optimum.z = NULL;
+	}
+	//Method(int _key, int index_problem, std::vector<double> x_0, std::vector<double> x_n, double _e, double _r);
+	void Init(int method, int _key, int index_problem, std::vector<double> x_0,
+		std::vector<double> x_n, double _e, double _r = 0);
 	Trial GetOpt() { return optimum; }
 	int GetBestIndex() { return best_i; }
 	void InitIntervalHans(int index, vector<double> &begin, vector<double> &end);
 	void Solve();
-	void  PrintTrueValueHans(int index_problem);
-	void PrintTrueValueHill(int index_problem);
-	double GetTrueOpt_hans(int index_problem);
-	double GetTrueOpt_hill(int index_problem);
-	double Funk(int key, int index_problem, double x);
+	void  PrintTrueValue(int index_problem, int task);
+	double GetTrueOpt(int index_problem, int task);
+	double Funñ (int method, int key, int index_problem, double x);
 };

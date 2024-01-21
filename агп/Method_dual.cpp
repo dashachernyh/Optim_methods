@@ -2,36 +2,17 @@
 
 #include<iostream>
 
-
-MethodDual::MethodDual(int _key, int _index_problem, std::vector<double> x_0, std::vector<double> x_n, double _e, double _r)
-{
-	index_problem = _index_problem;
-	key = _key;
-	if (key == 3)
-		InitIntervalHans(index_problem, x_0, x_n);
-	first.x = x_0[0];
-	first.z = Funk(key, index_problem, first.x);
-	second.x = x_n[0];
-	second.z = Funk(key, index_problem, second.x);
-	trials.push_back(first);
-	trials.push_back(second);
-	best_i = 0;
-	eps = _e;
-	r = _r;
-
-}
-
 void MethodDual::SolveDual()
 {
 	Trial current;
 	double M, Rmax;
 	size_t Rpos;
-	double curr_eps = second.x - first.x;
+	double curr_eps = trials[1].x - trials[0].x;
 	std::vector<Trial>::iterator it = trials.begin();
 	double z_min = trials[0].z;
 	if (trials[1].z < trials[0].z) z_min = trials[1].z;
 	int itr = 0;
-	optimum.z = first.z;
+	// optimum.z = first.z;
 	while (curr_eps > eps)
 	{
 		Rpos = 1;
@@ -78,7 +59,7 @@ void MethodDual::SolveDual()
 			sgn = 1;
 
 		current.x = (trials[Rpos].x + trials[Rpos - 1].x) / 2 - sgn * (trials[Rpos].z - trials[Rpos - 1].z) / (2 * M * r);
-		current.z = Funk(key, index_problem, current.x);
+		current.z = Funñ(0, key, index_problem, current.x);
 		trials.insert(it2, current);
 
 		if (optimum.z > current.z)

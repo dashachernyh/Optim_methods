@@ -3,13 +3,16 @@
 #include <iostream>
 #include<fstream>
 
-MethodMult_mixed::MethodMult_mixed(int _task, int _index_problem, double* y, double _a, double _b, double _e,
-	double _r, int _n, int _m, int _on_step, Mixture _mix, int _alpha)
-	:MethodMult(_task, _index_problem, y, _a, _b, _e, _r, _n, _m),
-	on_step(_on_step), mix(_mix), alpha(_alpha) {}
+void MethodMult_mixed::Init_Mix(int _task, int _index_problem, double* y, double _a, double _b, double _e,
+	double _r, int _n, int _m, int _on_step, Mixture _mix, int _alpha) {
+	Init(_task, _index_problem, y, _a, _b, _e, _r, _n, _m);
+	on_step = _on_step;
+	mix = _mix;
+	alpha = _alpha;
+}
 
 //алгоритм для многомерного случая, принимает массив y (координаты), размерности n, значения на [0, 1]
-void MethodMult_mixed::SolveMult_mixed(double* y, int a)
+void MethodMult_mixed::SolveMult_mixed(double* y)
 {
 	Trial current;        // для подсчета нового испытания
 	double M, Rmax;
@@ -32,7 +35,7 @@ void MethodMult_mixed::SolveMult_mixed(double* y, int a)
 
 	std::ofstream out1;
 	out1.open("Grishagin.txt", std::ofstream::ios_base::app);  // печать в файл
-	std::vector<double> true_opt = GetTrueOpt(task, index_problem);
+	std::vector<double> true_opt = GetTrueOpt();
 
 	while (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps)  //while (curr_eps > eps)
 	{
@@ -138,7 +141,7 @@ void MethodMult_mixed::SolveMult_mixed(double* y, int a)
 		mapd(current.x, m, y, n, 1);
 		InsertScale(y);
 
-		current.z = Funk_mult(task, index_problem, y);  // значении функции в точках y
+		current.z = Funk_mult(y);  // значении функции в точках y
 		trials.insert(it2, current);
 
 		out1 << y[0] << " " << y[1] << std::endl;

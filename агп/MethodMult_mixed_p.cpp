@@ -4,10 +4,13 @@
 #include<fstream>
 
 
-MethodMult_mixed_p::MethodMult_mixed_p(int _task, int _index_problem, double* y, double _a, double _b, double _e, double _r,
-	int _n, int _m, const int _on_step, Mixture _mix, int _alpha, int _p)
-	: MethodMult_p(_task, _index_problem, y, _a, _b, _e, _r, _n, _m, _p),
-	on_step(_on_step), mix(_mix), alpha(_alpha){}
+void MethodMult_mixed_p::Init_Mix_p(int _task, int _index_problem, double* y, double _a, double _b, double _e, double _r,
+	int _n, int _m, const int _on_step, Mixture _mix, int _alpha, int _p) {
+	Init_p(_task, _index_problem, y, _a, _b, _e, _r, _n, _m, _p);
+	on_step = _on_step;
+	mix = _mix;
+	alpha = _alpha;
+}
 
 //алгоритм для многомерного случая, принимает массив y (координаты), размерности n, значения на [0, 1]
 void MethodMult_mixed_p::SolveMult_mixed_p(double* y)
@@ -35,7 +38,7 @@ void MethodMult_mixed_p::SolveMult_mixed_p(double* y)
 
 	std::ofstream out1;
 	out1.open("Grishagin_p.txt", std::ofstream::ios_base::app);
-	std::vector<double> true_opt = GetTrueOpt(task, index_problem);
+	std::vector<double> true_opt = GetTrueOpt();
 
 	while (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps)  //while (curr_eps > eps)
 	{
@@ -191,7 +194,7 @@ void MethodMult_mixed_p::SolveMult_mixed_p(double* y)
 			new_trial.thread = (int)vect_current[j].z;
 			mapd(new_trial.x, m, y, n, 1);
 			InsertScale(y);
-			new_trial.z = Funk_mult(task, index_problem, y);
+			new_trial.z = Funk_mult(y);
 			std::vector<Trial_thread>::iterator it2 = find(trials_thread.begin(), trials_thread.end(), elem_of_ch[j]);
 			size_t pos_elem_of_ch = std::distance(trials_thread.begin(), it2);
 			trials_thread.insert(it2, new_trial);

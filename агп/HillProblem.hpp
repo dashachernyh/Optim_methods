@@ -4,6 +4,7 @@
 
 #include <math.h>
 #include <vector>
+#include <iostream>
 
 #include "IOptProblem.hpp"
 
@@ -29,6 +30,7 @@ class THillProblem : public IOptProblem
 		{
 			res = res + aHill[mProblemIndex][i] * sin(2 * i * M_PI * y[0]) + bHill[mProblemIndex][i] *
 				sin(2 * i * M_PI * y[0]);
+			//std::cout << "a[" << i << "] " << aHill[mProblemIndex][i] << " b[" << i << "] " << bHill[mProblemIndex][i] << "\n";
 		}
 		return res;
 	}

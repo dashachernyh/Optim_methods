@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 
+
 void MethodMult_DualLipsh::SolveMult_DualLipsh(double* y)
 {
 	Trial current;  // для подсчета нового испытания
@@ -17,20 +18,30 @@ void MethodMult_DualLipsh::SolveMult_DualLipsh(double* y)
 		if (z_min > trials[i].z)
 			z_min = trials[i].z;
 	}
-
 	double power = 1 / double(n);
 	double curr_eps = pow(trials[1].x - trials[0].x, power);
-	out_optimal[2] = trials[0].z;
+	out_optimal[n] = z_min;
 
 	double ro = (1 - 1 / r_glob) / (1 - 1 / r_loc) * (1 - 1 / r_glob) / (1 - 1 / r_loc);
 
 	// печать в файл
-	std::ofstream out1;
-	out1.open("Grishagin.txt", std::ofstream::ios_base::app);
+	//std::ofstream out1;
+	//out1.open("Grishagin.txt", std::ofstream::ios_base::app);
 
-	std::vector<double> true_opt = GetTrueOpt(task, index_problem);
+	std::vector<double> true_opt = GetTrueOpt();
 
-	while (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps)  //while (curr_eps > eps)
+	bool condition;
+
+	if (n == 2)
+	{
+		condition = fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps;
+	}
+	else
+	{
+		condition = fabs(true_opt[0] - out_optimal[0]) > eps;
+	}
+
+	while (condition && itr <= 10000)  //while (curr_eps > eps) && itr <= 1000
 	{
 		Rmax.pos = 1;
 
@@ -38,7 +49,7 @@ void MethodMult_DualLipsh::SolveMult_DualLipsh(double* y)
 		double d_z = fabs(trials[1].z - trials[0].z);
 		double d_x = fabs(trials[1].x - trials[0].x);
 		d_x = pow(d_x, power);
-		M = d_z / d_x;  //M = 50;
+		M = d_z / d_x;  //M = 50; 
 
 		for (size_t i = 2; i < trials.size(); i++)  // поиск со 2 интервала
 		{
@@ -46,8 +57,6 @@ void MethodMult_DualLipsh::SolveMult_DualLipsh(double* y)
 			max = fabs((trials[i].z - trials[i - size_t(1)].z)) / pow(trials[i].x - trials[i - size_t(1)].x, power);
 			if (max > M)
 				M = max;
-			if (z_min > trials[i].z)
-				z_min = trials[i].z;
 		}
 		if (M == 0)
 			M = 1;
@@ -113,26 +122,44 @@ void MethodMult_DualLipsh::SolveMult_DualLipsh(double* y)
 			sgn = 1;
 
 		current.x = (trials[Rmax.pos].x + trials[Rmax.pos - size_t(1)].x) / 2 - sgn / (2 * Rmax.r) * pow(fabs(delta_z_pos) / M, n);
-		mapd(current.x, m, y, n, 1);  // приведение координат
-		InsertScale(y);
-
-		current.z = Funk_mult(task, index_problem, y);  // значении функции в точках y
+		if (n != 1)
+		{
+			mapd(current.x, m, y, n, 1);  // приведение координат
+			InsertScale(y);
+		}
+		else
+		{
+			y[0] = current.x;
+			InsertScale(y);
+		}
+		current.z = Funk_mult(y);  // значении функции в точках y
 		trials.insert(it2, current);
 
-		out1 << y[0] << " " << y[1] << std::endl;
+		//out1 << y[0] << " " << y[1] << std::endl;
 		
-		if (out_optimal[2] > current.z)
+		if (out_optimal[n] > current.z)
 		{
 			best_i = itr;
-			out_optimal[0] = y[0];
-			out_optimal[1] = y[1];
-			out_optimal[2] = current.z;
+			for (int i = 0; i < n; i++) {
+				out_optimal[i] = y[i];
+			}
+			out_optimal[n] = current.z;
+			z_min = current.z;
 		}
 
 		itr++;
+
+		if (n == 2)
+		{
+			condition = fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps; 
+		}
+		else
+		{
+			condition = fabs(true_opt[0] - out_optimal[0]) > eps;
+		}
 	}
 
-	std::cout << "itr = " << itr << std::endl;
+	//std::cout << "itr = " << itr << std::endl;
 	//out1 <<trials.size() << std::endl;
-	out1.close();
+	//out1.close();
 }

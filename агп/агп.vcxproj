@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{943048DF-D2AC-4283-BB21-DE8A943608F3}</ProjectGuid>
-    <RootNamespace>агп</RootNamespace>
+    <RootNamespace>Optim_methods</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>Optim_methods</ProjectName>
   </PropertyGroup>
@@ -140,14 +140,20 @@
     <ClInclude Include="IOptProblemFamily.hpp" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MaxR.h" />
+    <ClInclude Include="MethodMult_AGP_ASR.hpp" />
     <ClInclude Include="MethodMult_DualLipsh.h" />
     <ClInclude Include="MethodMult_DualLipsh_p.h" />
     <ClInclude Include="MethodMult_mixed_p.h" />
     <ClInclude Include="MethodMult_p.h" />
+    <ClInclude Include="MethodMult_SearchRoot.hpp" />
     <ClInclude Include="MethodStrongina.h" />
+    <ClInclude Include="Method_AGP_ASR.hpp" />
     <ClInclude Include="Method_dual.h" />
     <ClInclude Include="MethodMult.h" />
+    <ClInclude Include="Method_SearchRoot.hpp" />
     <ClInclude Include="Mixture.h" />
+    <ClInclude Include="ShekelProblem.hpp" />
+    <ClInclude Include="ShekelProblemFamily.hpp" />
     <ClInclude Include="Trial.h" />
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +174,7 @@
     <ClCompile Include="IOptProblemFamily.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MethodMult.cpp" />
+    <ClCompile Include="MethodMult_AGP_ASR.cpp" />
     <ClCompile Include="MethodMult_DualLipsh.cpp" />
     <ClCompile Include="MethodMult_DualLipsh_p.cpp" />
     <ClCompile Include="MethodMult_mixed.cpp">
@@ -176,8 +183,12 @@
     <ClCompile Include="MethodMult_mixed_p.cpp" />
     <ClCompile Include="MethodMult_p.cpp" />
     <ClInclude Include="MethodMult_mixed.h" />
+    <ClCompile Include="MethodMult_SearchRoot.cpp" />
     <ClCompile Include="MethodStrongina.cpp" />
+    <ClCompile Include="Method_AGP_ASR.cpp" />
     <ClCompile Include="Method_dual.cpp" />
+    <ClCompile Include="Method_SearchRoot.cpp" />
+    <ClCompile Include="ShekelProblem.cpp" />
     <ClCompile Include="X_to_y.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -59,7 +59,8 @@ public:
 	{
 		p = 0;
 	}
-	MethodMult_p(int _task, int _index_problem, double* y, double _a, double _b, double _e,
+	void Init_p(int _task, int _index_problem, double* y, double _a, double _b, double _e,
 		double _r, int _n, int _m, const int p);
+	void ClearMethod_p();
 	void SolveMult_p(double* y);
 };
