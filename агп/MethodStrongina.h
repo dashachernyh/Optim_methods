@@ -19,6 +19,7 @@ protected:
 	int index_problem;
 	int best_i;
 	int key;
+	int check_method;
 	double eps, r;
 	THillProblemFamily hillFam;
 	THansenProblemFamily hansFam;
@@ -42,7 +43,7 @@ public:
 		optimum.z = NULL;
 	}
 	//Method(int _key, int index_problem, std::vector<double> x_0, std::vector<double> x_n, double _e, double _r);
-	void Init(int method, int _key, int index_problem, std::vector<double> x_0,
+	void Init(int method, int _check_method, int _key, int index_problem, std::vector<double> x_0,
 		std::vector<double> x_n, double _e, double _r = 0);
 	Trial GetOpt() { return optimum; }
 	int GetBestIndex() { return best_i; }

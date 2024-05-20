@@ -16,10 +16,12 @@ void MethodMult_AGP_ASR::SolveMult_AGP_ASR(double* y) {
 	int itr = 0;
 	std::vector<double> true_opt = GetTrueOpt();
 	std::ofstream out1;
-	out1.open("Log_AGP_ASR.txt", std::ofstream::ios_base::app);
+	out1.open("AGP_ASR.txt", std::ofstream::ios_base::app);
 
 	//optimum.z > eps curr_eps > eps
-	while (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps)
+	//fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps
+	bool check = (check_method == 0) ? out_optimal[n] > eps : (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps);
+	while (check && itr < 20000)
 	{
 		//out1 << "i = " << itr << " z_min = " << out_optimal[n] <<"\n";
 		Rpos = 1;
@@ -96,7 +98,7 @@ void MethodMult_AGP_ASR::SolveMult_AGP_ASR(double* y) {
 		current.z = Funk_mult(y);
 		trials.insert(it2, current);
 
-		//out1 << "\tx = " << current.x << " z = " << current.z << "\n";
+		out1 << y[0] << " " << y[1] << "\n";
 
 		if (z_min > current.z)
 		{
@@ -115,7 +117,8 @@ void MethodMult_AGP_ASR::SolveMult_AGP_ASR(double* y) {
 
 		//out1 << "zmin = " << z_min << " zpos = " << zpos << "\n";
 		itr++;
+		check = (check_method == 0) ? out_optimal[n] > eps : (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps);
 	}
-	//out1.close();
+	out1.close();
 	std::cout << "itr = " << itr << std::endl;
 }

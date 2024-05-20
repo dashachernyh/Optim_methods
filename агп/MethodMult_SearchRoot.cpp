@@ -12,16 +12,18 @@ void MethodMult_SearchRoot::SolveMult_SR(double* y) {
 	double power = 1 / double(n);
 	double curr_eps = pow(trials[1].x - trials[0].x, power);
 	std::vector<double> true_opt = GetTrueOpt();
+	std::cout << "true_opt " << true_opt[0] <<" " << true_opt[1]<< std::endl;
 
-	//std::ofstream out1;
-	//out1.open("Grishagin.txt", std::ofstream::ios_base::app);
+	std::ofstream out1;
+	out1.open("SearchRoot.txt", std::ofstream::ios_base::app);
 		//curr_eps = zmin;
 	//std::ofstream out;
 	//out.open("debug.txt", std::ofstream::ios_base::app);  // печать в файл
 	
 	//while (curr_eps > eps) z_min > eps curr_eps > eps
-	while ((fabs(true_opt[0] - out_optimal[0]) > eps
-		|| fabs(true_opt[1] - out_optimal[1]) > eps) && itr < 2500)
+	//out1 << true_opt[0] << " " << true_opt[1];
+	bool check = (check_method == 0) ? out_optimal[n] > eps : (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps);
+	while (check && itr < 20000)
 	{
 		
 		Rpos = 1;
@@ -48,7 +50,9 @@ void MethodMult_SearchRoot::SolveMult_SR(double* y) {
 		InsertScale(y);
 
 		current.z = Funk_mult(y);
-		trials.insert(it2, current);;
+		trials.insert(it2, current);
+
+		//out1 << y[0] << " " << y[1] << "\n";
 
 		if (out_optimal[2] > current.z) {
 			best_i = itr;
@@ -57,9 +61,10 @@ void MethodMult_SearchRoot::SolveMult_SR(double* y) {
 			out_optimal[2] = current.z;
 		}
 		//out << " opt = {" << optimum.x << ", " << optimum.z << "}\n";
-
+		//std::cout << "itr= " << itr << "\n";
 		++itr;
+		check = (check_method == 0) ? out_optimal[n] > eps : (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps);
 	}
-	//out.close();
+	out1.close();
 	std::cout << "itr = " << itr << std::endl;
 }

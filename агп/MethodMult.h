@@ -22,12 +22,13 @@ protected:
 	std::vector<double> out_optimal;  // значение out_optimal[0] = y*, out_optimal[1] = z* 
 	int index_problem;
 	int best_i;
+	int check_method;
 	int n, m;
 	double eps, r;
 	double a, b;                       //интервал куба
 	double koef[2];                    // коэффициенты масштабирования koef[0] для сдвига, koef[1] для увеличения масштаба
 	TGrishaginProblemFamily grish_fam;  //Семейство задач
-	TGKLSProblemFamily gkls_fam;
+	TGKLSProblemFamily gkls_fam{ 2, GKLSClass::Hard, GKLSFuncionType::TD };
 	THillProblemFamily hill_fam;
 	TShekelProblemFamily shekel_fam;
 //	double z_min, zpos;
@@ -45,7 +46,7 @@ public:
 		koef[0] = koef[1] = 0;
 		index_problem = best_i = task = -1;
 	}
-	void Init(int _task, int _index_problem, double* y, double _a,  double _b,
+	void Init(int _task, int _check_method, int _index_problem, double* y, double _a,  double _b,
 		double _e, double _r, int _n, int _m);
 	std::vector<double> GetOpt() { return out_optimal; }  // возвращает оптимальное значение
 	int GetBestIndex() { return best_i; }
@@ -55,7 +56,8 @@ public:
 		int size);
 	void ScaleFunc(double y);                             // масштабирует область поиска (куб)
 	void InsertScale(double* y);                          // применение масштабирование к y
-	void PrintTrueValue(); 
+	void PrintTrueValue();
+	void PrintTrueValueMult();
 	double Funk_mult(double* y);
 	double Funk_multMat(double* y, std::vector<std::vector<int>>& matrix1,
 		std::vector<std::vector<int>>& matrix2,

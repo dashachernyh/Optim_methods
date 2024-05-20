@@ -12,7 +12,8 @@ void Method_SearchRoot::Solve() {
 	//curr_eps = zmin;
 	//std::ofstream out;
 	//out.open("debug.txt", std::ofstream::ios_base::app);  // печать в файл
-	while (curr_eps > eps && itr <=10000) // optimum.z > eps curr_eps > eps
+	double check = (check_method == 0) ? optimum.z : curr_eps;
+	while (check > eps && itr <=10000) // optimum.z > eps curr_eps > eps
 	{
 		Rpos = 1;
 		double R = trials[1].z * trials[0].z;
@@ -46,6 +47,7 @@ void Method_SearchRoot::Solve() {
 		//out << " opt = {" << optimum.x << ", " << optimum.z << "}\n";
 
 		itr++;
+		check = (check_method == 0) ? optimum.z : curr_eps;
 	}
 	//out.close();
 	std::cout << "itr = " << itr << std::endl;

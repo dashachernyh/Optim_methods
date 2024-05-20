@@ -9,24 +9,24 @@ std::vector<double> MethodMult::GetTrueOpt()
 {
 	std::vector<double> optimumPoint;
 	std::vector<double> point;
-	if (task == 0 || task == 1) {
+	if (task >= 0 && task <= 3) {
 		optimumPoint = grish_fam[index_problem]->GetOptimumPoint();
 		point.push_back(optimumPoint[0]);
 		point.push_back(optimumPoint[1]);
 	}
-	else if(task == 2 || task == 3) {
+	else {
 		optimumPoint = gkls_fam[index_problem]->GetOptimumPoint();
 		point.push_back(optimumPoint[0]);
 		point.push_back(optimumPoint[1]);
 	}
-	else if  (task == 4) {
-		optimumPoint = hill_fam[index_problem]->GetOptimumPoint();
-		point.push_back(optimumPoint[0]);
-	}
-	else {
-		optimumPoint = shekel_fam[index_problem]->GetOptimumPoint();
-		point.push_back(optimumPoint[0]);
-	}
+	//else if  (task == 4) {
+	//	optimumPoint = hill_fam[index_problem]->GetOptimumPoint();
+	//	point.push_back(optimumPoint[0]);
+	//}
+	//else {
+	//	optimumPoint = shekel_fam[index_problem]->GetOptimumPoint();
+	//	point.push_back(optimumPoint[0]);
+	//}
 
 	return point;
 }
@@ -51,6 +51,19 @@ void MethodMult::PrintTrueValue()
 	else {
 		optimumPoint = shekel_fam[index_problem]->GetOptimumPoint();
 		std::cout << "x_min= " << optimumPoint[0] << "  F_min= " << shekel_fam[index_problem]->GetOptimumValue() << "\n";
+	}
+}
+void MethodMult::PrintTrueValueMult() {
+	vector<double> optimumPoint;
+	if (task >= 0 && task <= 3) {
+		optimumPoint = grish_fam[index_problem]->GetOptimumPoint();
+		std::cout << "x1_min= " << optimumPoint[0] << " x2_min= " << optimumPoint[1];
+		std::cout << "  F_min= " << grish_fam[index_problem]->GetOptimumValue() << std::endl;
+	}
+	else {
+		optimumPoint = gkls_fam[index_problem]->GetOptimumPoint();
+		std::cout << "x1_min= " << optimumPoint[0] << " x2_min= " << optimumPoint[1];
+		std::cout << "  F_min= " << gkls_fam[index_problem]->GetOptimumValue() << std::endl;
 	}
 }
 // 0 - Grishagin, 1 - GKLS,
@@ -97,7 +110,7 @@ double MethodMult::Funk_mult(double* y)
 	case 7: {
 		val.push_back(y[0]);
 		val.push_back(y[1]);
-		return fabs(-(gkls_fam[index_problem]->ComputeFunction(val) - gkls_fam[index_problem]->GetOptimumValue()));
+		return fabs(-gkls_fam[index_problem]->ComputeFunction(val) + gkls_fam[index_problem]->GetMaxValue());
 	}
 	default:
 		break;
@@ -155,7 +168,7 @@ void MethodMult::InsertScale(double* y)
 	}
 }
 
-void MethodMult::Init(int _task, int _index_problem, double* y, double _a, double _b, double _e, double _r,
+void MethodMult::Init(int _task, int _check_method, int _index_problem, double* y, double _a, double _b, double _e, double _r,
 	int _n, int _m) {
 	a = _a;
 	b = _b;
@@ -163,6 +176,7 @@ void MethodMult::Init(int _task, int _index_problem, double* y, double _a, doubl
 	r = _r;
 	n = _n;
 	m = _m;
+	check_method = _check_method;
 	Trial current, first, second;
 	task = _task;
 	index_problem = _index_problem;
@@ -242,13 +256,14 @@ void MethodMult::SolveMult(double* y, std::vector<std::vector<int>>& matrix1,
 	double power = 1 / double(n);
 	double curr_eps = pow(trials[1].x - trials[0].x, power);
 
-	//std::ofstream out1;
-	//out1.open("Grishagin.txt", std::ofstream::ios_base::app);
+	std::ofstream out1;
+	out1.open("Grishagin.txt", std::ofstream::ios_base::app);
 
 	std::vector<double> true_opt = GetTrueOpt();
 	//while (curr_eps > eps) (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps)
 	// fabs(out_optimal[n])
-	while ((fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps) && itr < 12000)
+	bool check = (check_method == 0) ? out_optimal[n] > eps : (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps);
+	while (check && itr < 20000)
 	{
 		//out1 << "i = " << itr << " z_min = " << out_optimal[n] << "\n";
 		Rpos = 1;
@@ -312,7 +327,7 @@ void MethodMult::SolveMult(double* y, std::vector<std::vector<int>>& matrix1,
 		current.z = Funk_mult(y);
 		trials.insert(it2, current);
 
-		//out1 << "\tx = " << current.x << " z = " << current.z << "\n";
+		out1 << y[0] << " " << y[1] << " " << current.z << "\n";
 
 		if (out_optimal[2] > current.z)
 		{
@@ -324,7 +339,8 @@ void MethodMult::SolveMult(double* y, std::vector<std::vector<int>>& matrix1,
 		}
 
 		itr++;
+		check = (check_method == 0) ? out_optimal[n] > eps : (fabs(true_opt[0] - out_optimal[0]) > eps || fabs(true_opt[1] - out_optimal[1]) > eps);
 	}
-	//std::cout << "itr = " << itr << std::endl;
-	//out1.close();
+	std::cout << "itr = " << itr << std::endl;
+	out1.close();
 }

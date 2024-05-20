@@ -52,7 +52,7 @@ bool Checked_value(double val_meth, double val_true, double eps)
  
 int main()
 {
-	double E = 0.005, r = 2.5;
+	double E = 0.005, r =6.0;
 	int n = 1, m = 10;
 	int key = 0;
 	double count_true = 0;
@@ -70,28 +70,41 @@ int main()
 		switch (key) {
 		case(0): {
 
-			int task = 1;
-			int len = 1; //  1 - HILL, 10 - Shekel
-			std::cout << "0- Hans, 1 - Hill, 2 - Shekel\n";
-			std::cin >> task;
+			int task_dim = 1;
+			int index_task = 0;
+			int len = 1; //  1 - HILL, 10 - Shekel, 2- GKLS, 1- Grish
+			std::cout << "0- Hill, Shekel, 1 - Gkls, Grish\n";
+			std::cin >> task_dim;
+			std::cout << "[0-2]-Hans, [3-5]-Hill, [6-8]-Shekel";
+			std::cout << "[0-3] - Grish, [4-7] - GKLS\n";
+			std::cin >> index_task;
 
 			count_true = 0;
 			// значения начала и конца поискового интервала  для задач Hans
 			double a, b;
-			int index_task = 265;
-			if (task == 1) {
+			int index_problem = 50;
+			if (task_dim == 0 and index_task >= 3 and index_task <= 5) {
 				// Hill на [0; 1]
 				a = 0.0;
 				b = 1.0;
 			}
-			else if (task == 2) {
+			else if (task_dim == 0 and index_task >= 6 and index_task <= 8) {
 				// Shekel на [0; 10]
 				len = 10;
 				a = 0.0;
 				b = 10.0;
 			}
-
-			grid_build_txt(1, a, b, index_task, 1000, 5);
+			else if (task_dim == 1 and index_task >= 0 and index_task <= 3) {
+				len = 1;
+				a = 0.0;
+				b = 1.0;
+			}
+			else {
+				len = 2;
+				a = -1.0;
+				b = 1.0;
+			}
+			grid_build(task_dim, index_task, a, b, index_problem, 1000);
 			break;
 		}
 		case 1:
@@ -100,7 +113,9 @@ int main()
 			int len = 1; //  1 - Grishagin, 2 - GKLS, 1 - HILL, 10 - Shekel
 			std::cout << "[0-2] - Hans, [3-5] - Hill, [6-8] - Shekel\n";
 			std::cin >> task;
-
+			int check_method = 0;
+			std::cout << "check_method: 0- z_min, 1 - curr_eps\n";
+			std::cin >> check_method;
 			count_true = 0;
 			// значения начала и конца поискового интервала  для задач Hans
 			vector<double> begin(20, 0), end(20, 0);
@@ -121,11 +136,11 @@ int main()
 			}
 			Method met;
 			aver = 0;
-			out <<"["<<key<< "] Task" << task << " e " << len * E<< " r " << r<<std::endl;
+			out <<"["<<key<< "] Task" << task << " e " << len * E<< " r " << r<< " check "<< check_method << std::endl;
 			for (int index = 0; index < maxTask; index++)
 			{
 				// инициализируем метод 0 - usual, 1 - fabs
-				met.Init(1, task, index, begin, end, len * E, r);
+				met.Init(1, check_method,  task, index, begin, end, len * E, r);
 				// вызов метода
 				met.Solve();
 
@@ -138,8 +153,8 @@ int main()
 				// вывод полученных  значений x,y задачи index
 				std::cout << "x*=" << met.GetOpt().x << "  " << "F(x*)=" << met.GetOpt().z << std::endl;
 				std::cout << std::endl;
-
-				if (Checked_method(met.GetOpt().x, met.GetTrueOpt(index, task), len*E)) //)met.GetOpt().z <= len * E Checked_method(met.GetOpt().x, met.GetTrueOpt(index, task), E)
+				bool check = (check_method == 0) ? met.GetOpt().z <= len * E : Checked_method(met.GetOpt().x, met.GetTrueOpt(index, task), len * E);
+				if (check) //)met.GetOpt().z <= len * E Checked_method(met.GetOpt().x, met.GetTrueOpt(index, task), E)
 				{
 					count_true++;
 					aver += met.GetBestIndex();
@@ -163,6 +178,10 @@ int main()
 			std::cout << "[0-2] - Hans, [3-5] - Hill, [6-8] - Shekel\n";
 			std::cin >> task;
 
+			int check_method = 0;
+			std::cout << "check_method: 0- z_min, 1 - curr_eps\n";
+			std::cin >> check_method;
+
 			count_true = 0;
 			// значения начала и конца поискового интервала  для задач Hans
 			vector<double> begin(20, 0), end(20, 0);
@@ -181,10 +200,10 @@ int main()
 				maxTask = 1000;
 			}
 			MethodDual met;
-
+			out << "[" << key << "] Task" << task << " e " << len * E << " r " << r << " check " << check_method << std::endl;
 			for (int index = 0; index < maxTask; index++) {
 
-				met.Init(0, task, index, begin, end, len * E, r);
+				met.Init(0, check_method, task, index, begin, end, len * E, r);
 				met.Solve();
 				
 				std::cout << "Problem[" << index << "]" << std::endl;
@@ -192,7 +211,9 @@ int main()
 				std::cout << "the best value on " << met.GetBestIndex() << " iterator" << std::endl;
 				std::cout << "x*=" << met.GetOpt().x << "  " << "F(x*)=" << met.GetOpt().z << std::endl;
 				std::cout << std::endl;
-				if (Checked_method(met.GetOpt().x, met.GetTrueOpt(index, task), len * E))
+
+				bool check = (check_method == 0) ? met.GetOpt().z <= len * E : Checked_method(met.GetOpt().x, met.GetTrueOpt(index, task), len * E);
+				if (check)
 				{
 					count_true ++;
 					out << met.GetBestIndex() << std::endl;
@@ -215,6 +236,9 @@ int main()
 			int len = 1; //  1 - Grishagin, 2 - GKLS, 1 - HILL, 10 - Shekel
 			std::cout << "[0, 3] - Grishagin, [4, 7] - GKLS\n";
 			std::cin >> task;
+			int check_method = 0;
+			std::cout << "check_method: 0- z_min, 1 - curr_eps\n";
+			std::cin >> check_method;
 
 			if (task >= 4 && task <= 7) {
 				a = -1.0;
@@ -224,24 +248,23 @@ int main()
 			std::vector<std::vector<int>> matrix1 = { { 1 } };
 			std::vector<std::vector<int>> matrix2 = { {2} };
 			std::vector<std::vector<std::vector<int>>> matrix_res = { {{0}} };
-			out << "Mult" << std::endl;
-			out << "eps " << len * E << " r " << r<<"\n";
+			out << "[" << key << "] Task" << task << " e " << len * E << " r " << r << " check " << check_method << std::endl;
 			double aver = 0;
-			for (int index = 0; index < 100; index++)
+			for (int index = 50; index < 51; index++)
 			{
-				met.Init(task, index, y, a, b, len * E, r, n, m);
+				met.Init(task, check_method, index, y, a, b, len * E, r, n, m);
 				std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 				met.SolveMult(y, matrix1, matrix2, matrix_res, 1);
 				std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
 				auto sec = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 				average_time += sec.count();
-				std::cout << index << "\n";
 				std::cout << "GrishaginProblem[" << index << "]" << std::endl;
 				met.PrintTrueValue();
 				std::cout << "the best value on " << met.GetBestIndex() << " iterator" << std::endl;
 				std::cout << "x*= " << met.GetOpt()[0] << " y*= " << met.GetOpt()[1] << "  " << " F(x*)= " << met.GetOpt()[2] << std::endl;
 				std::cout << std::endl;
-				if (Checked_method_mult(n, met.GetOpt(), met.GetTrueOpt(), len * E)) //Checked_method_mult(n, met.GetOpt(), met.GetTrueOpt(), len * E) met.GetOpt()[2] <= len * E
+				bool check = (check_method == 0) ? met.GetOpt()[2] <= len * E : Checked_method_mult(n, met.GetOpt(), met.GetTrueOpt(), len * E);
+				if (check) //Checked_method_mult(n, met.GetOpt(), met.GetTrueOpt(), len * E) met.GetOpt()[2] <= len * E
 				{
 					count_true ++;
 					aver += met.GetBestIndex();
@@ -279,7 +302,7 @@ int main()
 				a = -1.0;
 				len = 2;
 			}
-
+			out << "[" << key << "] Task" << task << " e " << len * E << " r " << r << std::endl;
 			for (int index = 0; index < 1; index++)
 			{
 				met.Init_p(task, index, y, a, b, len * E, r, n, m, p);
@@ -325,6 +348,7 @@ int main()
 				len = 2;
 			}
 			double* y = new double[n];
+			out << "[" << key << "] Task" << task << " e " << len * E << " r " << r << std::endl;
 			for (int index = 0; index < 1000; index++)
 			{
 				//auto  metod = std::make_shared<MethodMult_mixed>(task, index, y, -1, 1, E, r, n, m, _step, _mixed, _alpha);
@@ -370,6 +394,7 @@ int main()
 				len = 2;
 			}
 			double* y = new double[n];
+			out << "[" << key << "] Task" << task << " e " << len * E << " r " << r << std::endl;
 			for (int index = 0; index < 1000; index++)
 			{
 				met.Init_Mix_p(task, index, y, a, b, len * E, r, n, m, _step, _mixed, _alpha, p);
@@ -413,6 +438,7 @@ int main()
 			std::cin >> r_loc;*/
 			double* y = new double[n];
 			aver = 0;
+			out << "[" << key << "] Task" << task << " e " << len * E << " r " << r << std::endl;
 			for (int index = 0; index < 100; index++)
 			{
 				met.Init_Dual(task, index, y, a, b, len * E, r_loc, r, n, m);
@@ -572,6 +598,11 @@ int main()
 			int len = 1; //  1 - Grishagin, 2 - GKLS, 1 - HILL, 10 - Shekel
 			std::cout << "[0-2] - Hans, [3-5] - Hill, [6-8] - Shekel\n";
 			std::cin >> task;
+
+			int check_method = 0;
+			std::cout << "check_method: 0- z_min, 1 - curr_eps\n";
+			std::cin >> check_method;
+
 			vector<double> begin(20, 0), end(20, 0);
 			int maxTask = 20;
 			if (task >= 3 and task <= 5) {
@@ -587,11 +618,11 @@ int main()
 				end = { 10.0 };
 				maxTask = 1000;
 			}
-			out << "[" << key << "] Task" << task << " e " << len * E << " r " << r << std::endl;
 
+			out << "[" << key << "] Task" << task << " e " << len * E << " r " << r << " check " << check_method << std::endl;
 			for (int index = 0; index < maxTask; index++) {
 
-				met.Init(1, task, index, begin, end, len * E);
+				met.Init(1,check_method, task, index, begin, end, len * E);
 				met.Solve();
 				met.PrintTrueValue(index, task);
 
@@ -605,7 +636,8 @@ int main()
 				// вывод полученных  значений x,y задачи index
 				std::cout << "x*=" << met.GetOpt().x << "  " << "F(x*)=" << met.GetOpt().z << std::endl;
 				std::cout << std::endl;
-				if (Checked_method(met.GetOpt().x, met.GetTrueOpt(index, task), len * E))// met.GetOpt().z <= len*E Checked_method(met.GetOpt().x, met.GetTrueOpt(index, task), E)
+				bool check = (check_method == 0) ? met.GetOpt().z <= len * E : Checked_method(met.GetOpt().x, met.GetTrueOpt(index, task), len * E);
+				if (check) // met.GetOpt().z <= len*E Checked_method(met.GetOpt().x, met.GetTrueOpt(index, task), E)
 				{
 					count_true++;
 					aver += met.GetBestIndex();
@@ -625,10 +657,15 @@ int main()
 			count_true = 0;
 			aver = 0;
 			Method_AGP_ASR met;
-			int task = 1;         // 0- Hans, 1 - Hill, 2 - Shekel
+			int task = 1;
 			std::cout << "[0-2] - Hans, [3-5] - Hill, [6-8] - Shekel\n";
 			int len = 1; //  1 - Grishagin, 2 - GKLS, 1 - HILL, 10 - Shekel
 			std::cin >> task;
+
+			int check_method = 0;
+			std::cout << "check_method: 0- z_min, 1 - curr_eps\n";
+			std::cin >> check_method;
+
 			vector<double> begin(20, 0), end(20, 0);
 			int maxTask = 20;
 			if (task >= 3 and task <= 5) {
@@ -644,12 +681,12 @@ int main()
 				end = { 10.0 };
 				maxTask = 1000;
 			}
-			out << "[" << key << "] Task" << task << " e " << len * E << " r " << r << std::endl;
 
+			out << "[" << key << "] Task" << task << " e " << len * E << " r " << r << " check " << check_method << std::endl;
 			for (int index = 0; index < maxTask; index++) {
 
 				met.PrintTrueValue(index, task);
-				met.Init(1, task, index, begin, end, len * E, r);
+				met.Init(1, check_method, task, index, begin, end, len * E, r);
 				met.Solve();
 
 				std::cout << "Problem[" << index << "]" << std::endl;
@@ -663,7 +700,9 @@ int main()
 				std::cout << "x*=" << met.GetOpt().x << "  " << "F(x*)=" << met.GetOpt().z << std::endl;
 				std::cout << std::endl;
 
-				if (Checked_method(met.GetOpt().x, met.GetTrueOpt(index, task), len * E)) // met.GetOpt().z <= len *E Checked_method(met.GetOpt().x, met.GetTrueOpt(index, task), E)
+
+				bool check = (check_method == 0) ? met.GetOpt().z <= len * E : Checked_method(met.GetOpt().x, met.GetTrueOpt(index, task), len * E);
+				if (check)  // met.GetOpt().z <= len *E Checked_method(met.GetOpt().x, met.GetTrueOpt(index, task), E)
 				{
 					count_true++;
 					aver += met.GetBestIndex();
@@ -689,29 +728,34 @@ int main()
 			std::cout << "[0, 3] - Grishagin, [4, 7] - GKLS\n";
 			std::cin >> task;
 
-			if (task >= 2 or task <= 7) {
+			int check_method = 0;
+			std::cout << "check_method: 0- z_min, 1 - curr_eps\n";
+			std::cin >> check_method;
+
+			if (task >= 4 and task <= 7) { // ?
 				a = -1.0;
 				len = 2;
 			}
 			double* y = new double[n];
 
-			out << "Mult AGP ASR" << std::endl;
-			out << "eps " << len * E << " r " << r << "\n";
+			out << "[" << key << "] Task" << task << " e " << len * E << " r " << r << " check " << check_method << std::endl;
 			double aver = 0;
-			for (int index = 0; index < 100; index++)
+			for (int index = 50; index < 51; index++)
 			{
-				met.Init(task, index, y, a, b, len * E, r, n, m);
+				met.Init(task,check_method, index, y, a, b, len * E, r, n, m);
 				std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 				met.SolveMult_AGP_ASR(y);
 				std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
 				auto sec = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 				average_time += sec.count();
 				std::cout << "Problem[" << index << "]" << std::endl;
-				met.PrintTrueValue();
+				met.PrintTrueValueMult();
 				std::cout << "the best value on " << met.GetBestIndex() << " iterator" << std::endl;
 				std::cout << "x*= " << met.GetOpt()[0] << " y*= " << met.GetOpt()[1] << "  " << " F(x*)= " << met.GetOpt()[2] << std::endl;
 				std::cout << std::endl;
-				if (Checked_method_mult(n, met.GetOpt(), met.GetTrueOpt(), len * E)) // Checked_method_mult(n, met.GetOpt(), met.GetTrueOpt(), len * E) met.GetOpt()[2] <= len * E
+
+				bool check = (check_method == 0) ? met.GetOpt()[2] <= len * E : Checked_method_mult(n, met.GetOpt(), met.GetTrueOpt(), len * E);
+				if (check) // Checked_method_mult(n, met.GetOpt(), met.GetTrueOpt(), len * E) met.GetOpt()[2] <= len * E
 				{
 					count_true++;
 					aver += met.GetBestIndex();
@@ -737,37 +781,39 @@ int main()
 			aver = 0;
 			MethodMult_SearchRoot met;
 			double a = 0.0, b = 1.0;
-			int task = 2;         // 0- Hans, 1 - Hill, 2 - Shekel
-			int len = 1; //  1 - Grishagin, 2 - GKLS, 1 - HILL, 10 - Shekel
-			double* y = new double[n];
+			int task = 2;
 			std::cout << "[0, 3] - Grishagin, [4, 7] - GKLS\n";
+			int len = 1; //  1 - Grishagin, 2 - GKLS
+			double* y = new double[n];
 			std::cin >> task;
 
-			if (task >= 2 or task <= 7) {
+			int check_method = 0;
+			std::cout << "check_method: 0- z_min, 1 - curr_eps\n";
+			std::cin >> check_method;
+
+			if (task > 3) {
 				a = -1.0;
 				len = 2;
 			}
 
-			out << "[" << key << "] Task" << task << " e " << len * E << " r " << r << std::endl;
-
+			out << "[" << key << "] Task" << task << " e " << len * E << " r " << r << " check " << check_method << std::endl;
 			for (int index = 0; index < 100; index++) {
 
-				met.Init(task, index, y, a, b, len* E, r, n, m);
+				met.Init(task,check_method, index, y, a, b, len* E, r, n, m);
 				met.SolveMult_SR(y);
-				met.PrintTrueValue();
 
 				std::cout << "Problem[" << index << "]" << std::endl;
 				// вывод истинных значений x,y задачи index
-				//met.PrintTrueValue(index, task);
+				met.PrintTrueValueMult();
 
 				// вывод итерации, на которой было получено лучшее значение
 				std::cout << "the best value on " << met.GetBestIndex() << " iterator" << std::endl;
 
-				// вывод полученных  значений x,y задачи index
-				std::cout << "the best value on " << met.GetBestIndex() << " iterator" << std::endl;
 				std::cout << "x*= " << met.GetOpt()[0] << " y*= " << met.GetOpt()[1] << "  " << " F(x*)= " << met.GetOpt()[2] << std::endl;
 				std::cout << std::endl;
-				if (met.GetOpt()[2] <= len * E)// met.GetOpt().z <= len*E Checked_method(met.GetOpt().x, met.GetTrueOpt(index, task), E)
+
+				bool check = (check_method == 0) ? met.GetOpt()[2] <= len * E : Checked_method_mult(n, met.GetOpt(), met.GetTrueOpt(), len * E);
+				if (check)// met.GetOpt()[2] <= len*E Checked_method_mult(n, met.GetOpt(), met.GetTrueOpt(), len * E)
 				{
 					count_true++;
 					aver += met.GetBestIndex();

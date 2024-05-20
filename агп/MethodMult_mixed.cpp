@@ -5,7 +5,7 @@
 
 void MethodMult_mixed::Init_Mix(int _task, int _index_problem, double* y, double _a, double _b, double _e,
 	double _r, int _n, int _m, int _on_step, Mixture _mix, int _alpha) {
-	Init(_task, _index_problem, y, _a, _b, _e, _r, _n, _m);
+	Init(_task, 1, _index_problem, y, _a, _b, _e, _r, _n, _m);
 	on_step = _on_step;
 	mix = _mix;
 	alpha = _alpha;

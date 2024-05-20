@@ -103,7 +103,7 @@ double Method::Funñ(int method, int key, int index_problem, double x)
 	}
 }
 
-void Method::Init(int method, int _key, int _index_problem, std::vector<double> x_0,
+void Method::Init(int method, int _check_method, int _key, int _index_problem, std::vector<double> x_0,
 	std::vector<double> x_n, double _e, double _r)
 {
 	std::ofstream f_out;
@@ -111,6 +111,7 @@ void Method::Init(int method, int _key, int _index_problem, std::vector<double> 
 	f_out << GetTrueOpt(_index_problem, _key) <<" " << Funñ(method, _key, _index_problem, GetTrueOpt(_index_problem, _key))<< "\n";
 	Trial first, second;
 	index_problem = _index_problem;
+	check_method = _check_method;
 	key = _key;
 	if (key == 0)
 		InitIntervalHans(index_problem, x_0, x_n);
@@ -138,9 +139,10 @@ void Method::Solve()
 	size_t Rpos;
 	double curr_eps = trials[1].x - trials[0].x;
 	int itr = 0;
-	std::ofstream f_out;
-	f_out.open("graph265.txt", std::ofstream::ios_base::app);
-	while (curr_eps > eps && itr <= 10000) //(curr_eps > eps) optimum.z
+	//std::ofstream f_out;
+	//f_out.open("graph265.txt", std::ofstream::ios_base::app);
+	double check = (check_method == 0) ? optimum.z : curr_eps;
+	while (check > eps && itr <= 10000) //(curr_eps > eps) optimum.z
 	{
 		Rpos = 1;
 		M = fabs((trials[1].z - trials[0].z) / (trials[1].x - trials[0].x));
@@ -175,17 +177,16 @@ void Method::Solve()
 			- trials[Rpos - size_t(1)].z) / (2 * M);
 		current.z = Funñ(1, key, index_problem, current.x);
 		trials.insert(it2, current);
-		f_out << current.x << " " << current.z << "\n";
-		if (current.x == 0.750128) {
-			double mp = 0;
-		}
+		//f_out << current.x << " " << current.z << "\n";
+		
 		if (optimum.z > current.z)
 		{
 			best_i = itr;
 			optimum = current;
 		}
 		itr++;
+		check = (check_method == 0) ? optimum.z : curr_eps;
 	}
 	std::cout << "itr = " << itr << std::endl;
-	f_out.close();
+	//f_out.close();
 }

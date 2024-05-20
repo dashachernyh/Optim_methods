@@ -23,7 +23,8 @@ void Method_AGP_ASR::Solve() {
 	double sum_z = trials[1].z + trials[0].z;
 	double dif_x = trials[1].x - trials[0].x;
 
-	while (curr_eps > eps && itr <= 10000) //optimum.z > eps curr_eps > eps
+	double check = (check_method == 0) ? optimum.z : curr_eps;
+	while (check > eps && itr <= 10000) //optimum.z > eps curr_eps > eps
 	{
 		Rpos = 1;
 		M = fabs((trials[1].z - trials[0].z) / (trials[1].x - trials[0].x));
@@ -102,6 +103,7 @@ void Method_AGP_ASR::Solve() {
 
 		//out1 << "zmin = " << z_min << " zpos = " << zpos << "\n";
 		itr++;
+		check = (check_method == 0) ? optimum.z : curr_eps;
 	}
 	//out1.close();
 	std::cout << "itr = " << itr << std::endl;

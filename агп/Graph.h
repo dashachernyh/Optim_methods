@@ -14,56 +14,9 @@
 THansenProblemFamily hansFam;
 THillProblemFamily hillFam;
 TGrishaginProblemFamily grishFam;  //Семейство задач
-TGKLSProblemFamily gklsFam;
+TGKLSProblemFamily gklsFam{ 2, GKLSClass::Hard, GKLSFuncionType::TD };
 TShekelProblemFamily shekelFam;
 
-void grid_build(int t_class, std::vector<double>& x, std::vector<double>& z,
-	const double a, const double b, int index_problem, const int h)
-{
-	std::ofstream out2;
-	out2.open("Python.txt", std::ofstream::ios_base::app);
-	const int s = (b - a) / h;
-	double point;
-	switch (t_class)
-	{
-	case(0): {
-		// 2-numerics 
-		for (int i = 0; i < s; i++)
-		{
-			point = a + i * h;
-			x.push_back(point);
-
-		}
-		
-		for (int i = 0; i < x.size(); i++)
-		{
-			for (int j = 0; j < x.size(); j++)
-			{
-				z.push_back(gklsFam[index_problem]->ComputeFunction({ x[j], x[i] }));
-				out2 << z[i * x.size() + j] << " ";
-			}
-			out2 << std::endl;
-		}
-		out2.close();
-
-	}
-	case(2): {
-		// 2-numerics 
-		for (int i = 0; i < s; i++)
-		{
-			point = a + i * h;
-			x.push_back(point);
-		}
-
-		for (int i = 0; i < x.size(); i++)
-		{
-			z.push_back(shekelFam[index_problem]->ComputeFunction({ x[i] }));
-			out2 << z[i] << " ";
-		}
-		out2.close();
-	}
-	}
-}
 
 //вычисляет значение функции, key - выбор метода или задачи
 double funс(int key, int index_problem, double x)
@@ -108,12 +61,43 @@ double funс(int key, int index_problem, double x)
 	}
 }
 
+double funс_mult(int key, int index_problem, std::vector<double> y)
+{
+	switch (key) {
+		case 0: {
+			return grishFam[index_problem]->ComputeFunction(y);
+		}
+		case 1: {
+			return fabs(grishFam[index_problem]->ComputeFunction(y) - grishFam[index_problem]->GetOptimumValue());
+		}
+		case 2: {
+			return sqrt(fabs(grishFam[index_problem]->ComputeFunction(y) - grishFam[index_problem]->GetOptimumValue()));
+		}
+		case 3: {
+
+			return fabs(-(grishFam[index_problem]->ComputeFunction(y) - grishFam[index_problem]->GetMaxValue()));
+		}
+		case 4: {
+			return gklsFam[index_problem]->ComputeFunction(y);
+		}
+		case 5: {
+			return fabs(gklsFam[index_problem]->ComputeFunction(y) - gklsFam[index_problem]->GetOptimumValue());
+		}
+		case 6: {
+			return sqrt(fabs(gklsFam[index_problem]->ComputeFunction(y) - gklsFam[index_problem]->GetOptimumValue()));
+		}
+		case 7: {
+			return fabs(-gklsFam[index_problem]->ComputeFunction(y) + gklsFam[index_problem]->GetMaxValue());
+		}
+	}
+}
+
 vector<double> get_opt(int key, int index_problem) {
 	vector<double> optimumPoint;
-	
+
 	if (key == 0 || key == 1) {
 		optimumPoint = hansFam[index_problem]->GetOptimumPoint();
-		optimumPoint.push_back( hansFam[index_problem]->GetOptimumValue());
+		optimumPoint.push_back(hansFam[index_problem]->GetOptimumValue());
 		return optimumPoint;
 	}
 	else if (key == 2) // sqrt(module_hans_min)
@@ -122,7 +106,7 @@ vector<double> get_opt(int key, int index_problem) {
 		optimumPoint.push_back(hansFam[index_problem]->GetMaxValue());
 		return optimumPoint;
 	}
-	else if (key ==3 || key == 4) // module(_h_max)
+	else if (key == 3 || key == 4) // module(_h_max)
 	{
 		optimumPoint = hillFam[index_problem]->GetOptimumPoint();
 		optimumPoint.push_back(hillFam[index_problem]->GetOptimumValue());
@@ -134,7 +118,7 @@ vector<double> get_opt(int key, int index_problem) {
 		optimumPoint.push_back(hillFam[index_problem]->GetMaxValue());
 		return optimumPoint;
 	}
-	else if (key ==6 || key ==7) //sqrt(module_hill_min)
+	else if (key == 6 || key == 7) //sqrt(module_hill_min)
 	{
 		optimumPoint = shekelFam[index_problem]->GetOptimumPoint();
 		optimumPoint.push_back(shekelFam[index_problem]->GetOptimumValue());
@@ -148,42 +132,47 @@ vector<double> get_opt(int key, int index_problem) {
 	}
 }
 
-void grid_build_txt(int t_class, const double a, const double b, int index_problem, const int s,
-	int key)
+vector<double> get_opt_mult(int key, int index_problem) {
+	vector<double> optimumPoint;
+
+	if (key >= 0 and key <= 2) {
+		optimumPoint = grishFam[index_problem]->GetOptimumPoint();
+		//optimumPoint.push_back(grishFam[index_problem]->GetOptimumValue());
+		
+	}
+	else if (key == 3) 
+	{
+		optimumPoint = hansFam[index_problem]->GetMaxPoint();
+		//optimumPoint.push_back(hansFam[index_problem]->GetMaxValue());
+	}
+	else if (key >= 4 and key <= 6) // module(_h_max)
+	{
+		optimumPoint = gklsFam[index_problem]->GetOptimumPoint();
+		//optimumPoint.push_back(hillFam[index_problem]->GetOptimumValue());
+	}
+	else if (key == 7) // module_hill
+	{
+		optimumPoint = gklsFam[index_problem]->GetMaxPoint();
+		//optimumPoint.push_back(hillFam[index_problem]->GetMaxValue());
+	}
+	return optimumPoint;
+}
+
+void grid_build(int t_class, int key,
+	const double a, const double b, int index_problem, const int n)
 {
 	std::ofstream out2;
-	out2.open("Python_txt.txt", std::ofstream::ios_base::app);
-	double  h = (b - a) / s;
-	std::vector<double> x(s);
+	out2.open("Python50.txt", std::ofstream::ios_base::app);
+	const double h = double(b - a) / double(n);
 	double point;
+	std::vector<double> x(n+1);
+	out2 << index_problem << "\n";
 	switch (t_class)
 	{
 	case(0): {
-
-		// 2-numerics 
-		for (int i = 0; i < s; i++)
-		{
-			point = a + i * h;
-			x[i]  =point;
-
-		}
-
-		for (int i = 0; i < x.size(); i++)
-		{
-			for (int j = 0; j < x.size(); j++)
-			{
-				out2 << gklsFam[index_problem]->ComputeFunction({ x[j], x[i] }) << " ";
-				//out2 << grish_fam[index_problem]->ComputeFunction({ x[j], x[i] }) << " ";
-			}
-			out2 << std::endl;
-		}
-		out2.close();
-
-	}
-	case(1): {
 		vector<double> opt_val = get_opt(key, index_problem);
-		out2 << opt_val[0] << " "<< opt_val[1]<<"\n";
-		for (int i = 0; i < s; i++)
+		out2 << opt_val[0] << " " << opt_val[1] << "\n";
+		for (int i = 0; i < n + 1; i++)
 		{
 			point = a + i * h;
 			x[i] = point;
@@ -196,6 +185,29 @@ void grid_build_txt(int t_class, const double a, const double b, int index_probl
 		}
 		out2 << "\n";
 		out2.close();
+		break;
+	}
+	case(1): {
+		// 2-numerics 
+		vector<double> opt_val = get_opt_mult(key, index_problem);
+		out2 << opt_val[0] << " " << opt_val[1] << "\n";
+		for (int i = 0; i < n; i++)
+		{
+			x[i] = a + i * h;
+
+		}
+
+		for (int i = 0; i < x.size(); i++)
+		{
+			for (int j = 0; j < x.size(); j++)
+			{
+				//out2 << x[i] << " " << x[j] << " ";
+				out2 << funс_mult(key, index_problem, { x[j], x[i] }) << " ";
+			}
+			out2 << "\n";
+		}
+		out2.close();
+		break;
 	}
 	}
 }

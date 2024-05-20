@@ -13,7 +13,7 @@ public:
 
 	void Init_Dual(int _task, int _index_problem, double* y, double _a, double _b,
 		double _e, double r_l, double r_g, int _n, int _m) {
-		Init(_task, _index_problem, y, _a, _b, _e, r_g, _n, _m);
+		Init(_task, 1, _index_problem, y, _a, _b, _e, r_g, _n, _m);
 		r_loc = r_l;
 		r_glob = r_g;
 	}
